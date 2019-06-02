@@ -6,6 +6,7 @@ import 'package:worksent_sesfikile/irrelevant.dart';
 import 'package:worksent_sesfikile/pages/main_page.dart';
 import 'package:worksent_sesfikile/provider/home_provider.dart';
 import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
+import 'package:worksent_sesfikile/widgets/form_listview.dart';
 
 class SignInPage extends StatefulWidget{
   @override
@@ -51,7 +52,7 @@ class _SignInPage extends State<SignInPage>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: ListView(
+      body: FormListView(
         children: <Widget>[
           Padding(
             padding:

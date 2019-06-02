@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:worksent_sesfikile/blocs/add_driver_bloc.dart';
 import 'package:worksent_sesfikile/irrelevant.dart';
 import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
+import 'package:worksent_sesfikile/widgets/form_listview.dart';
 
 class AddDriverPage extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _AddDriverState extends State<AddDriverPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Add Driver")),
-      body: ListView(
+      body: FormListView(
         children: <Widget>[
           _buildFirstName(),
           _buildLastName(),

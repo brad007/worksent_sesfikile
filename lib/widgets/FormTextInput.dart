@@ -4,9 +4,13 @@ class FormTextInput extends StatelessWidget {
   final String hint;
   final ValueChanged<String> onChange;
   final Stream stream;
-  final double padding;
+  final EdgeInsets padding;
 
-  FormTextInput({this.hint, this.onChange, this.stream, this.padding = 16});
+  FormTextInput(
+      {this.hint,
+      this.onChange,
+      this.stream,
+      this.padding = const EdgeInsets.all(16)});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class FormTextInput extends StatelessWidget {
           builder: (context, AsyncSnapshot<String> snapshot) {
             if (!snapshot.hasData) {
               return Padding(
-                padding:  EdgeInsets.all(padding),
+                padding: padding,
                 child: TextField(
                   decoration: InputDecoration(hintText: hint),
                   onChanged: onChange,
@@ -25,7 +29,7 @@ class FormTextInput extends StatelessWidget {
               );
             } else {
               return Padding(
-                padding:  EdgeInsets.all(padding),
+                padding: padding,
                 child: TextField(
                   decoration:
                       InputDecoration(hintText: hint, errorText: snapshot.data),
@@ -36,7 +40,7 @@ class FormTextInput extends StatelessWidget {
           });
     } else {
       return Padding(
-        padding:  EdgeInsets.all(padding),
+        padding: padding,
         child: TextField(
           decoration: InputDecoration(hintText: hint),
           onChanged: onChange,

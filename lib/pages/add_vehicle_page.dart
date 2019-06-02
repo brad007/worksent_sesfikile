@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:worksent_sesfikile/blocs/add_vehicle_bloc.dart';
 import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
+import 'package:worksent_sesfikile/widgets/form_listview.dart';
 
 import '../irrelevant.dart';
 
@@ -28,7 +29,7 @@ class _AddVehicleState extends State<AddVehiclePage>{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(title: Text("Add Vehicle")),
-      body: ListView(
+      body: FormListView(
         children: <Widget>[
           _buildVehicleType(),
           _buildBrand(),

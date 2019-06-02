@@ -6,6 +6,7 @@ import 'package:worksent_sesfikile/models/user_model.dart';
 import 'package:worksent_sesfikile/pages/main_page.dart';
 import 'package:worksent_sesfikile/provider/home_provider.dart';
 import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
+import 'package:worksent_sesfikile/widgets/form_listview.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -15,10 +16,12 @@ class SignUpPage extends StatefulWidget {
 class _SignUpState extends State<SignUpPage> {
   final _bloc = SignUpBloc();
   SharedPreferences _preferences;
+  bool isTaxiAssociation;
 
   @override
   void initState() {
     super.initState();
+    isTaxiAssociation = false;
 
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       _preferences = sp;
@@ -48,31 +51,29 @@ class _SignUpState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 32, right: 32, top: 32, bottom: 16),
-            child: Center(
-                child: Text(
-              "Sign Up",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            )),
-          ),
-          _buildCompanyName(),
-          _buildContactName(),
-          _buildCompanyEmail(),
-          _buildCompanyAddress(),
-          _buildBranch(),
-          _buildDivision(),
-          _buildPassword(),
-          _buildConfirmPassword(),
-          _buildSignUpButton(),
-          _buildSwitchToLoginButton(),
-          SizedBox(height: 16)
-        ],
+        body: FormListView(children: <Widget>[
+      Padding(
+        padding:
+            const EdgeInsets.only(left: 32, right: 32, top: 32, bottom: 16),
+        child: Center(
+            child: Text(
+          "Sign Up",
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        )),
       ),
-    );
+      _buildCompanyName(),
+      _buildContactName(),
+      _buildCompanyEmail(),
+      _buildCompanyAddress(),
+      _buildCommercialToggle(),
+      _buildBranch(),
+      _buildDivision(),
+      _buildPassword(),
+      _buildConfirmPassword(),
+      _buildSignUpButton(),
+      _buildSwitchToLoginButton(),
+      SizedBox(height: 16)
+    ]));
   }
 
   Widget _buildCompanyName() {
@@ -108,8 +109,39 @@ class _SignUpState extends State<SignUpPage> {
   }
 
   Widget _buildBranch() {
-    return FormTextInput(
-        hint: "Branch - If Required *", onChange: _bloc.branchChanged);
+    if (!isTaxiAssociation) {
+      return FormTextInput(
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          hint: "Branch - If Required *",
+          onChange: _bloc.branchChanged);
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        child: DropdownButton(
+          hint: Text("Taxi Association"),
+          items: <String>[
+            "CODETA",
+            "CATA",
+            "UNCEDO",
+            "Mitchelle's Plain",
+            "BOLAND",
+            "EDEN",
+            "GREATER CAPE",
+            "NORTHERNS",
+            "TWO OCEANS",
+            "WEST COAST]"
+          ].map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String value) {
+            _bloc.branchChanged(value);
+          },
+        ),
+      );
+    }
   }
 
   Widget _buildDivision() {
@@ -177,6 +209,26 @@ class _SignUpState extends State<SignUpPage> {
       onPressed: () {
         Navigator.pushNamed(context, "/signIn");
       },
+    );
+  }
+
+  Widget _buildCommercialToggle() {
+    return Container(
+      margin: EdgeInsets.only(left: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(isTaxiAssociation ? "Taxi Association" : "Commercial"),
+          Switch(
+              value: isTaxiAssociation,
+              onChanged: (bool changed) {
+                _bloc.branchChanged(null);
+                setState(() {
+                  isTaxiAssociation = changed;
+                });
+              })
+        ],
+      ),
     );
   }
 }

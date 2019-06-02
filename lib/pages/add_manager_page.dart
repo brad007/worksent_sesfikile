@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:worksent_sesfikile/blocs/add_manager_bloc.dart';
 import 'package:worksent_sesfikile/irrelevant.dart';
 import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
+import 'package:worksent_sesfikile/widgets/form_listview.dart';
 
 class AddManagerPage extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _AddManagerState extends State<AddManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Add Manager")),
-      body: ListView(
+      body: FormListView(
         children: <Widget>[
           _buildFirstName(),
           _buildLastName(),
