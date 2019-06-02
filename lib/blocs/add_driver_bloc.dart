@@ -2,10 +2,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:worksent_sesfikile/irrelevant.dart';
 import 'package:worksent_sesfikile/models/driver_data.dart';
 import 'package:worksent_sesfikile/models/driver_model.dart';
+import 'package:worksent_sesfikile/repositories/auth/auth_repository.dart';
 import 'package:worksent_sesfikile/repositories/driver/driver_repository.dart';
 
 class AddDriverBloc {
   final _driverRepository = DriverRepository();
+  final _authRepository = AuthRepository();
 
   //subjects
   final _firstNameSubject = BehaviorSubject<String>();
@@ -265,9 +267,10 @@ class AddDriverBloc {
           branch: data.branch,
           driversLicenseExpireDate: data.driversLicenceExpireDate);
 
-      return _driverRepository
-          .create(driverModel, driverModel, null)
-          .asStream();
+      return _authRepository.getUser().then((user) {
+        driverModel.company = user.companyName;
+        return _driverRepository.create(driverModel, driverModel, null);
+      }).asStream();
     }).listen((DriverModel model) {
       _showLoader.sink.add(false);
       _driverCreatedSubject.sink.add(Irrelevant.Instance);

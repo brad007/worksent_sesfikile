@@ -11,6 +11,7 @@ class VehicleModel extends Model {
   String vehicleStorageAddress;
   String insuranceCompany;
   String vehicleRegistrationNumber;
+  String company;
 
   VehicleModel(String id,
       {this.vehicleType,
@@ -21,6 +22,7 @@ class VehicleModel extends Model {
       this.currentKMs,
       this.vehicleStorageAddress,
       this.insuranceCompany,
+      this.company,
       this.vehicleRegistrationNumber})
       : super(id, DateTime.now().millisecondsSinceEpoch,
             DateTime.now().millisecondsSinceEpoch);
@@ -36,6 +38,7 @@ class VehicleModel extends Model {
     this.vehicleStorageAddress = obj['vehicleStorageAddress'];
     this.insuranceCompany = obj['insuranceCompany'];
     this.vehicleRegistrationNumber = obj['vehicleRegistrationNumber'];
+    this.company = obj['company'];
   }
 
   @override
@@ -51,6 +54,7 @@ class VehicleModel extends Model {
     map['vehicleStorageAddress'] = this.vehicleStorageAddress;
     map['insuranceCompany'] = this.insuranceCompany;
     map['vehicleRegistrationNumber'] = this.vehicleRegistrationNumber;
+    map['company'] = this.company;
     return map;
   }
 
@@ -66,5 +70,6 @@ class VehicleModel extends Model {
     this.vehicleStorageAddress = map['vehicleStorageAddress'];
     this.insuranceCompany = map['insuranceCompany'];
     this.vehicleRegistrationNumber = map['vehicleRegistrationNumber'];
+    this.company = map['company'];
   }
 }

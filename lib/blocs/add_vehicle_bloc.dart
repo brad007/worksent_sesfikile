@@ -1,11 +1,13 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:worksent_sesfikile/blocs/vehicle_data.dart';
+import 'package:worksent_sesfikile/models/vehicle_data.dart';
 import 'package:worksent_sesfikile/irrelevant.dart';
 import 'package:worksent_sesfikile/models/vehicle_model.dart';
+import 'package:worksent_sesfikile/repositories/auth/auth_repository.dart';
 import 'package:worksent_sesfikile/repositories/vehicle/vehicle_repository.dart';
 
 class AddVehicleBloc {
   final _vehicleRepository = VehicleRepository();
+  final _authRepository = AuthRepository();
 
   //subject
   final _vehicleTypeSubject = BehaviorSubject<String>();
@@ -262,13 +264,14 @@ class AddVehicleBloc {
           insuranceCompany: data.insuranceCompany,
           vehicleRegistrationNumber: data.vehicleRegistrationNumber);
 
-      return _vehicleRepository
-          .create(vehicleModel, vehicleModel, null)
-          .asStream();
+      return _authRepository.getUser().then((user) {
+        vehicleModel.company = user.companyName;
+        return _vehicleRepository.create(vehicleModel, vehicleModel, null);
+      }).asStream();
     }).listen((VehicleModel model) {
       _showLoader.sink.add(false);
       _vehicleCreatedSubject.sink.add(Irrelevant.Instance);
-    }).onError((e){
+    }).onError((e) {
       print(e.toString());
     });
   }

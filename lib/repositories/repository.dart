@@ -30,10 +30,11 @@ abstract class Repository<T extends Model, S extends Model> {
     });
   }
 
-  Stream<QuerySnapshot> getList(
-  {CompanyModel company, S model, int offset, int limit}) {
-    Stream<QuerySnapshot> snapshots =
-        getCollection(_firestore, model, company).snapshots();
+  Stream<QuerySnapshot> getList(String companyName,
+      {CompanyModel company, S model, int offset, int limit}) {
+    Stream<QuerySnapshot> snapshots = getCollection(_firestore, model, company)
+        .where("company", isEqualTo: companyName)
+        .snapshots();
 
     if (offset != null) {
       snapshots = snapshots.skip(offset);

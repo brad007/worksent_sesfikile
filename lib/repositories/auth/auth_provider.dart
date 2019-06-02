@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:worksent_sesfikile/models/user_model.dart';
 
 class AuthProvider {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> getUser() {
+  Future<FirebaseUser> getFirebaseUser() {
     return _auth.currentUser();
   }
+
 
   Future<FirebaseUser> signInUser({String email, String password}) {
     return _auth.signInWithEmailAndPassword(email: email, password: password);

@@ -2,10 +2,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:worksent_sesfikile/irrelevant.dart';
 import 'package:worksent_sesfikile/models/driver_data.dart';
 import 'package:worksent_sesfikile/models/driver_model.dart';
+import 'package:worksent_sesfikile/repositories/auth/auth_repository.dart';
 import 'package:worksent_sesfikile/repositories/manager/manager_repository.dart';
 
 class AddManagerBloc {
   final _managerRepository = ManagerRepository();
+  final _authRepository = AuthRepository();
 
   //subjects
   final _firstNameSubject = BehaviorSubject<String>();
@@ -36,6 +38,7 @@ class AddManagerBloc {
   Function(String) get lastNameChanged => _lastNameSubject.sink.add;
 
   Function(String) get mobileNumberChanged => _mobileNumberSubject.sink.add;
+
   Function(String) get emailChanged => _emailSubject.sink.add;
 
   Function(String) get driversLicenseChanged => _driversLicenseSubject.sink.add;
@@ -53,6 +56,7 @@ class AddManagerBloc {
   Stream<String> get lastNameStream => _lastNameSubject.stream;
 
   Stream<String> get mobileNumberStream => _mobileNumberSubject.stream;
+
   Stream<String> get emailStream => _emailSubject.stream;
 
   Stream<String> get driversLicenseStream => _driversLicenseSubject.stream;
@@ -75,6 +79,7 @@ class AddManagerBloc {
   Stream<String> get lastNameError => _lastNameError.stream;
 
   Stream<String> get mobileNumberError => _mobileNumberError.stream;
+
   Stream<String> get emailError => _emailError.stream;
 
   Stream<String> get driversLicenseError => _driversLicenseError.stream;
@@ -93,8 +98,8 @@ class AddManagerBloc {
             emailStream,
             driversLicenseStream,
             branchStream,
-            addressStream, (firstName, lastName, mobileNumber, email,driversLicense,
-                branch, address) {
+            addressStream, (firstName, lastName, mobileNumber, email,
+                driversLicense, branch, address) {
       return DriverData(
           firstName: firstName,
           lastName: lastName,
@@ -130,9 +135,8 @@ class AddManagerBloc {
       String branch = data.branch;
       String address = data.driversLicenceExpireDate;
 
-      return validateField(
-          firstName, lastName, mobileNumber,
-          email, driversLicense, branch, address);
+      return validateField(firstName, lastName, mobileNumber, email,
+          driversLicense, branch, address);
     });
 
     Observable.combineLatest2(fieldsValidation, managerCreatedStream,
@@ -210,13 +214,14 @@ class AddManagerBloc {
           branch: data.branch,
           driversLicenseExpireDate: data.driversLicenceExpireDate);
 
-      return _managerRepository
-          .create(managerModel, managerModel, null)
-          .asStream();
+      return _authRepository.getUser().then((user) {
+        managerModel.company = user.companyName;
+        return _managerRepository.create(managerModel, managerModel, null);
+      }).asStream();
     }).listen((DriverModel model) {
       _showLoader.sink.add(false);
       _managerCreatedSubject.sink.add(Irrelevant.Instance);
-    }).onError((e){
+    }).onError((e) {
       print(e.toString());
     });
   }
@@ -245,7 +250,7 @@ class AddManagerBloc {
       return ValidationType.MISSING_MOBILE_NUMBER;
     } else if (email.isEmpty) {
       return ValidationType.MISSING_EMAIL;
-    }  else if (driversLicense == null) {
+    } else if (driversLicense == null) {
       return ValidationType.MISSING_DRIVERS_LICENSE;
     } else if (branch.isEmpty) {
       return ValidationType.MISSING_BRANCH;

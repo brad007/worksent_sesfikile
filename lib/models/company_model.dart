@@ -4,8 +4,11 @@ class CompanyModel {
   String phoneNumber;
   String address;
   String email;
+  String company;
 
-  CompanyModel(this.id, this.name, this.phoneNumber, this.address, this.email);
+
+  CompanyModel(this.id, this.name, this.phoneNumber, this.address, this.email,
+      this.company);
 
   CompanyModel.map(dynamic obj) {
     this.id = obj['id'];
@@ -13,6 +16,7 @@ class CompanyModel {
     this.phoneNumber = obj['phoneNumber'];
     this.address = obj['address'];
     this.email = obj['email'];
+    this.company = obj['company'];
   }
 
   Map<String, dynamic> toMap() {
@@ -22,6 +26,7 @@ class CompanyModel {
     map['phoneNumber'] = this.phoneNumber;
     map['address'] = this.address;
     map['email'] = this.email;
+    map['company'] = this.company;
     return map;
   }
 
@@ -31,5 +36,6 @@ class CompanyModel {
     this.phoneNumber = map['phoneNumber'];
     this.address = map['address'];
     this.email = map['email'];
+    this.company = map['company'];
   }
 }

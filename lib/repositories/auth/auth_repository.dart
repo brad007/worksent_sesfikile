@@ -7,8 +7,14 @@ class AuthRepository {
   AuthProvider _authProvider = AuthProvider();
   UserProvider _userProvider = UserProvider();
 
-  Future<FirebaseUser> getUser() {
-    return _authProvider.getUser();
+  Future<FirebaseUser> getFirebaseUser() {
+    return _authProvider.getFirebaseUser();
+  }
+
+  Future<UserModel> getUser() {
+    return _authProvider.getFirebaseUser().then((firebaseUser) {
+      return _userProvider.getUser(firebaseUser.email);
+    });
   }
 
   Future<FirebaseUser> signInUser({String email, String password}) {

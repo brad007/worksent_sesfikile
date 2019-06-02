@@ -10,6 +10,7 @@ class DriverModel extends Model {
   String pdpExpireDate;
   String branch;
   String driversLicenseExpireDate;
+  String company;
 
   DriverModel(String id,
       {this.firstName,
@@ -20,6 +21,7 @@ class DriverModel extends Model {
       this.pdpLicenseUrl,
       this.pdpExpireDate,
       this.branch,
+      this.company,
       this.driversLicenseExpireDate})
       : super(id, DateTime.now().millisecondsSinceEpoch,
             DateTime.now().millisecondsSinceEpoch);
@@ -34,6 +36,7 @@ class DriverModel extends Model {
     this.pdpExpireDate = obj['pdpExpireDate'];
     this.branch = obj['branch'];
     this.driversLicenseExpireDate = obj['driversLicenseExpireDate'];
+    this.company = obj['company'];
   }
 
   @override
@@ -49,6 +52,7 @@ class DriverModel extends Model {
     map['pdpExpireDate'] = this.pdpExpireDate;
     map['branch'] = this.branch;
     map['driversLicenseExpireDate'] = this.driversLicenseExpireDate;
+    map['company'] = this.company;
     return map;
   }
 
@@ -64,6 +68,7 @@ class DriverModel extends Model {
     this.pdpExpireDate = map['pdpExpireDate'];
     this.branch = map['branch'];
     this.driversLicenseExpireDate = map['driversLicenseExpireDate'];
+    this.company = map['company'];
   }
 
 

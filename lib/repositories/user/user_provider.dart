@@ -24,6 +24,12 @@ class UserProvider {
     });
   }
 
+  Future<UserModel> getUser(String email){
+    return _firestore.collection("users").document(email).get().then((documentSnapshot){
+      return UserModel.fromMap(documentSnapshot.data);
+    });
+  }
+
   Future<dynamic> updateUser({UserModel user}) async {
     final TransactionHandler updateTransaction = (Transaction tx) async {
       final DocumentSnapshot ds =
