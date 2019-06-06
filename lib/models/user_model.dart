@@ -7,9 +7,10 @@ class UserModel extends Model {
   String workNumber;
   String companyName;
   String companyAddress;
+  String imageUrl;
 
   UserModel(String userId, int dateCreated, int dateUpdated,
-      {this.email, this.fullName, this.workNumber})
+      {this.email, this.fullName, this.workNumber, this.imageUrl})
       : super(userId, dateCreated, dateUpdated);
 
   UserModel.map(dynamic obj) : super.map(obj) {
@@ -19,6 +20,7 @@ class UserModel extends Model {
     this.workNumber = obj['workNumber'];
     this.companyName = obj['companyName'];
     this.companyAddress = obj['companyAddress'];
+    this.imageUrl = obj['imageUrl'];
     this.dateCreated = obj['dateCreated'];
     this.dateUpdated = obj['dateUpdated'];
   }
@@ -32,6 +34,7 @@ class UserModel extends Model {
     map['workNumber'] = workNumber;
     map['companyName'] = companyName;
     map['companyAddress'] = companyAddress;
+    map['imageUrl'] = imageUrl;
     map['dateCreated'] = dateCreated;
     map['dateUpdated'] = dateUpdated;
 
@@ -45,6 +48,7 @@ class UserModel extends Model {
     this.workNumber = map['workNumber'];
     this.companyName = map['companyName'];
     this.companyAddress = map['companyAddress'];
+    this.imageUrl = map['imageUrl'];
     this.dateCreated = map['dateCreated'];
     this.dateUpdated = map['dateUpdated'];
   }

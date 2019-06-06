@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:worksent_sesfikile/pages/sign_up_page.dart';
 import 'package:worksent_sesfikile/pages/vehicles_page.dart';
 
 import 'drivers_page.dart';
@@ -129,10 +131,13 @@ class _MainState extends State<MainPage> {
             leading: Icon(Icons.arrow_back),
             onTap: () {
               setState(() {
-//                page = EmployeesPage();
-                menuItemSelected = SIGN_OUT;
+                SharedPreferences.getInstance().then((SharedPreferences sp) {
+                  sp.remove("idToken");
+
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/register', (Route<dynamic> route) => false);
+                });
               });
-              Navigator.pop(context);
             },
           ),
         ],

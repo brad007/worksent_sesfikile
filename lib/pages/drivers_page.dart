@@ -49,6 +49,32 @@ class _DriversState extends State<DriversPage> {
         ));
   }
 
+  Widget _profileImage(DriverModel model) {
+    final buttonSize = 40.0;
+    return  Column(
+      children: <Widget>[
+        Container(
+              child: model.imageUrl != null?
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(buttonSize * 0.5),
+                      child: Image.network(
+                        model.imageUrl,
+                        fit: BoxFit.cover,
+                      ))
+                  : Icon(
+                      Icons.center_focus_weak
+                    ),
+              width: buttonSize,
+              height: buttonSize,
+              decoration: BoxDecoration(
+                  color: Colors.blue[400],
+                  borderRadius: BorderRadius.circular(buttonSize * 0.5)),
+            ),
+        Text("Profile")
+      ],
+    );
+  }
+
   Widget driverWidget(DriverModel model) {
     return InkWell(
       child: Card(
@@ -72,18 +98,13 @@ class _DriversState extends State<DriversPage> {
               ),
               Divider(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Column(
                     children: <Widget>[Icon(Icons.location_on), Text("Trips")],
                   ),
                   InkWell(
-                    child: Column(
-                      children: <Widget>[
-                        Icon(Icons.account_circle),
-                        Text("Profile")
-                      ],
-                    ),
+                    child: _profileImage(model),
                     onTap: () {
                       Navigator.push(
                         context,

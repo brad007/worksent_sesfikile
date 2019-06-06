@@ -62,7 +62,12 @@ class _VehiclesState extends State<VehiclesPage> {
                   Text("${model.vehicleRegistrationNumber}")
                 ],
               ),
-              Icon(Icons.location_on)
+              Row(
+                children:<Widget>[
+                    _profileImage(model),
+                    Icon(Icons.location_on)
+                ]
+              )
             ],
           ),
         ),
@@ -75,5 +80,22 @@ class _VehiclesState extends State<VehiclesPage> {
         );
       },
     );
+  }
+
+  
+  Widget _profileImage(VehicleModel model) {
+    final buttonSize = 80.0;
+    return
+        Container(
+              child: model.pictureUrl != null? Image.network(
+                        model.pictureUrl,
+                        fit: BoxFit.cover,
+                      )
+                  : Icon(
+                      Icons.center_focus_weak
+                    ),
+              width: buttonSize,
+              height: buttonSize,
+            );
   }
 }
