@@ -1,4 +1,5 @@
 import 'package:worksent_sesfikile/models/model.dart';
+import 'package:worksent_sesfikile/models/vehicle_model.dart';
 
 class DriverModel extends Model {
   String firstName;
@@ -12,6 +13,7 @@ class DriverModel extends Model {
   String driversLicenseExpireDate;
   String company;
   String imageUrl;
+  VehicleModel vehicle;
 
   DriverModel(String id,
       {this.firstName,
@@ -24,7 +26,9 @@ class DriverModel extends Model {
       this.branch,
       this.company,
       this.imageUrl,
-      this.driversLicenseExpireDate})
+      this.driversLicenseExpireDate,
+      this.vehicle
+      })
       : super(id, DateTime.now().millisecondsSinceEpoch,
             DateTime.now().millisecondsSinceEpoch);
 
@@ -40,6 +44,7 @@ class DriverModel extends Model {
     this.driversLicenseExpireDate = obj['driversLicenseExpireDate'];
     this.company = obj['company'];
     this.imageUrl = obj['imageUrl'];
+    this.vehicle = VehicleModel.map(obj['vehicle']);
   }
 
   @override
@@ -57,11 +62,11 @@ class DriverModel extends Model {
     map['driversLicenseExpireDate'] = this.driversLicenseExpireDate;
     map['company'] = this.company;
     map['imageUrl'] = this.imageUrl;
+    map['vehicle'] = this.vehicle.toMap();
     return map;
   }
 
-
-  DriverModel.fromMap(Map<String, dynamic> map): super.fromMap(map){
+  DriverModel.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     this.id = map['id'];
     this.firstName = map['firstName'];
     this.lastName = map['lastName'];
@@ -74,7 +79,6 @@ class DriverModel extends Model {
     this.driversLicenseExpireDate = map['driversLicenseExpireDate'];
     this.company = map['company'];
     this.imageUrl = map['imageUrl'];
+    this.vehicle = VehicleModel.fromMap(map['vehicle']);
   }
-
-
 }

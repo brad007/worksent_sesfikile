@@ -1,15 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
 import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/models/user_model.dart';
+import 'package:worksent_sesfikile/models/location_model.dart';
 import 'package:worksent_sesfikile/pages/profile_image_camera.dart';
+import 'package:worksent_sesfikile/pages/tracking_page.dart';
+import 'package:worksent_sesfikile/utils/Utills.dart';
+import 'package:worksent_sesfikile/widgets/stacked_area_custom_color_line_chart.dart';
 import 'package:worksent_sesfikile/widgets/star_display.dart';
 import "package:flutter_image_compress/flutter_image_compress.dart";
 import "package:firebase_storage/firebase_storage.dart";
+import 'package:charts_flutter/flutter.dart' as charts;
+
+
 
 class DriverPage extends StatefulWidget {
   final DriverModel model;
@@ -24,7 +31,59 @@ class _DriverState extends State<DriverPage> {
   File profileImage;
   final  _bloc = DriverBloc();
 
+  DateTime startTime;
+
+  DateTime endTime;
+
+  DateTime selectedDate;
+
   _DriverState(this.model);
+
+  GoogleMapController mapController;
+
+  Polyline polylines;
+  Set<Marker> markers = Set();
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = DateTime.now();
+    polylines = Polyline(
+        polylineId: PolylineId("polyline_id"),
+        startCap: Cap.roundCap,
+        endCap: Cap.squareCap);
+
+    _bloc.locationsStream.listen((locations) {
+      if (locations != null) {
+        setState(() {
+          polylines = polylines.copyWith(
+              pointsParam: locations
+                  .map((location) =>
+                      LatLng(location.coords.latitude, location.coords.longitude))
+                  .toList());
+
+          var startMarker = Marker(
+              infoWindow: InfoWindow(title: "Start"),
+              markerId: MarkerId("start_marker"),
+              position:
+                  LatLng(locations.first.coords.latitude, locations.first.coords.longitude));
+          var endMarker = Marker(
+              infoWindow: InfoWindow(title: "End"),
+              markerId: MarkerId("end_marker"),
+              position:
+                  LatLng(locations.last.coords.latitude, locations.last.coords.longitude));
+
+          markers.clear();
+          markers.add(startMarker);
+          markers.add(endMarker);
+          double totalSpeed = 0.0;
+          locations.forEach((location) => totalSpeed += location.coords.speed);
+
+          // averageSpeed = totalSpeed / locations.length;
+          // lastDate = locations.last.dateCreated;
+        });
+  }
+  });}
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +96,9 @@ class _DriverState extends State<DriverPage> {
           _buildProfileImage(),
           _buildTrackingInfo(),
           _buildDateRange(),
-          _buildInfo()
+          _buildInfo(),
+          _buildGraph(),
+          _buildMap()
         ],
       ),
     );
@@ -66,11 +127,11 @@ class _DriverState extends State<DriverPage> {
           ),
           Spacer(),
           Column(
-            children: <Widget>[Text("100KM/h"), Text("AVG SPEED")],
+            children: <Widget>[_getSpeed(), Text("AVG SPEED")],
           ),
           Spacer(),
           Column(
-            children: <Widget>[Text("321"), Text("KMs Driven")],
+            children: <Widget>[_buildKMsDriven(), Text("Driven")],
           )
         ],
       ),
@@ -154,6 +215,16 @@ class _DriverState extends State<DriverPage> {
 
   }
 
+  Widget _getDate(){
+    return StreamBuilder(
+      initialData: DateTime.now(),
+      stream: _bloc.dateStream,
+      builder: (BuildContext context, AsyncSnapshot<DateTime> snapshot){
+        var date = snapshot.data;
+        return Text("${date.day}-${date.month}-${date.year}");
+      },
+    );
+  }
 
   Widget _buildDateRange() {
     return Container(
@@ -161,9 +232,22 @@ class _DriverState extends State<DriverPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("Today"),
+          _getDate(),
           FlatButton(
-            onPressed: () {},
+            onPressed: () async {
+              final DateTime picked = await showDatePicker(
+                context: context,
+                firstDate: DateTime(2019).subtract(Duration(days: 365)),
+                initialDate: DateTime.now(),
+                lastDate: DateTime.now().add(Duration(days: 1))
+              );
+
+                setState((){
+                  selectedDate = picked;
+                });
+              _bloc.changeDate(picked);
+
+            },
             child: const Text("Choose Date"),
             color: const Color(0xFFE51460),
             textColor: Colors.white,
@@ -173,6 +257,31 @@ class _DriverState extends State<DriverPage> {
     );
   }
 
+//   DateTime dob = DateTime.parse('1967-10-12');
+// Duration dur =  DateTime.now().difference(dob);
+// String differenceInYears = (dur.inDays/365).floor().toString();
+// return new Text(differenceInYears + ' years');
+
+Widget _getDuration(){
+  return StreamBuilder(
+    initialData: "0",
+    stream: _bloc.durationStream,
+     builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+      return Text("${snapshot.data}Hrs");
+    },
+  );
+}
+
+Widget _getSpeed(){
+  return StreamBuilder(
+    initialData: 0.0,
+    stream: _bloc.speedStream,
+     builder: (BuildContext context, AsyncSnapshot<double> snapshot){
+      return Text("${snapshot.data*3.6}KM/h");
+    },
+  );
+}
+
   Widget _buildInfo() {
     return Card(
       margin: EdgeInsets.all(16),
@@ -181,14 +290,7 @@ class _DriverState extends State<DriverPage> {
           child: Column(children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text("KMs Driven"), Text("33.4KM")],
-            ),
-            SizedBox(height: 8),
-            Divider(),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text("Duration"), Text("2.3Hr")],
+              children: <Widget>[Text("Duration"), _getDuration()],
             ),
             SizedBox(height: 8),
             Divider(),
@@ -197,16 +299,76 @@ class _DriverState extends State<DriverPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[Text("Assigned Vehicle"), Text("Some Car")],
             ),
-            SizedBox(height: 8),
-            Divider(),
-            SizedBox(height: 8),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("KMs Driven"),
-                  StarDisplay(value: 4),
-                ])
+            SizedBox(height: 8)
           ])),
     );
   }
+
+  Widget _buildKMsDriven(){
+    return StreamBuilder(
+       initialData: null,
+       stream: _bloc.distanceStream,
+       builder: (BuildContext ctxt, AsyncSnapshot<double> snapshot){
+        if(snapshot.hasData){
+          return Text("${snapshot.data.toStringAsFixed(2)}KM");
+        }else{
+          return Text("0KM");
+        }
+        });
+  }
+
+  Widget _buildGraph(){
+   return
+   Container(
+     height: 240,
+     child:
+     StreamBuilder(
+       initialData: null,
+       stream: _bloc.locationsStream,
+       builder: (BuildContext ctxt, AsyncSnapshot<List<LocationModel>> snapshot){
+        if(snapshot.hasData){
+
+            return StackedAreaCustomColorLineChart(_generateSeries(snapshot.data), animate: false);
+        }else{
+          return Container();
+        }
+       },
+     )
+   );
+  }
+
+  Widget _buildMap(){
+    return Container(
+      margin: EdgeInsets.all(16),
+      child: MaterialButton(
+        color: const Color(0xFFE51460),
+        child: Text("View User Route"),
+        textColor: Colors.white,
+        onPressed: (){
+          Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => TrackingPage(selectedDate),
+             ));
+      },
+    ));
+  }
+
+  List<charts.Series<LocationModel, double>> _generateSeries(List<LocationModel> locations){
+      
+
+      return [charts.Series<LocationModel, double>(
+              id: 'Location',
+              displayName: "Location",
+              // colorFn specifies that the line will be blue.
+              colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+              // areaColorFn specifies that the area skirt will be light blue.
+              areaColorFn: (_, __) =>
+                charts.MaterialPalette.blue.shadeDefault.lighter,
+              domainFn: (LocationModel location, _) =>  (DateTime.parse(location.timestamp).millisecondsSinceEpoch - DateTime.parse(locations.first.timestamp).millisecondsSinceEpoch)/1000.0,
+              measureFn: (LocationModel location, _) => location.coords.speed,
+              data:  locations,
+            )];
+  }
 }
+// numbers.sort((a, b) => a.length.compareTo(b.length));
