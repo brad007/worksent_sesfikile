@@ -55,7 +55,7 @@ class _MainState extends State<MainPage> {
               setState(() {
                 page = HomePage();
                 menuItemSelected = HOME;
-                title = "Home";
+                title = "SESFIKILE";
               });
               Navigator.pop(context);
             },
@@ -99,32 +99,32 @@ class _MainState extends State<MainPage> {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            selected: BOOKINGS == menuItemSelected,
-            title: Text("Bookings *"),
-            leading: Icon(Icons.event),
-            onTap: () {
-              setState(() {
-//                page = EmployeesPage();
-                menuItemSelected = BOOKINGS;
-                title = "Bookings";
-              });
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            selected: MARKET_PLACE == menuItemSelected,
-            title: Text("Market Place *"),
-            leading: Icon(Icons.local_grocery_store),
-            onTap: () {
-              setState(() {
-//                page = EmployeesPage();
-                menuItemSelected = MARKET_PLACE;
-                title = "Market MARKET_PLACE";
-              });
-              Navigator.pop(context);
-            },
-          ),
+//           ListTile(
+//             selected: BOOKINGS == menuItemSelected,
+//             title: Text("Bookings *"),
+//             leading: Icon(Icons.event),
+//             onTap: () {
+//               setState(() {
+// //                page = EmployeesPage();
+//                 menuItemSelected = BOOKINGS;
+//                 title = "Bookings";
+//               });
+//               Navigator.pop(context);
+//             },
+//           ),
+//           ListTile(
+//             selected: MARKET_PLACE == menuItemSelected,
+//             title: Text("Market Place *"),
+//             leading: Icon(Icons.local_grocery_store),
+//             onTap: () {
+//               setState(() {
+// //                page = EmployeesPage();
+//                 menuItemSelected = MARKET_PLACE;
+//                 title = "Market MARKET_PLACE";
+//               });
+//               Navigator.pop(context);
+//             },
+//           ),
           ListTile(
             selected: SIGN_OUT == menuItemSelected,
             title: Text("Sign Out"),
@@ -140,6 +140,10 @@ class _MainState extends State<MainPage> {
               });
             },
           ),
+          Container(
+            margin: EdgeInsets.only(top: 32, left: 16),
+            child: Text("WorkSent - Sesfikile"),
+          )
         ],
       ),
     );

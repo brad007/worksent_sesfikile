@@ -20,6 +20,6 @@ class DriverRepository extends Repository<DriverModel, DriverModel> {
   @override
   DocumentReference getDocument(Firestore _firestore, DriverModel model,
       DriverModel sModel, CompanyModel company) {
-    return _firestore.collection(rootNode).document();
+    return _firestore.collection(rootNode).document(model.email);
   }
 }

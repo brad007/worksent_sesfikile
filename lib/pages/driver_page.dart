@@ -5,13 +5,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
+import 'package:worksent_sesfikile/blocs/vehicle_bloc.dart';
 import 'package:worksent_sesfikile/models/driver_model.dart';
 import 'package:worksent_sesfikile/models/location_model.dart';
+import 'package:worksent_sesfikile/models/vehicle_model.dart';
+import 'package:worksent_sesfikile/pages/choose_vehicle_page.dart';
 import 'package:worksent_sesfikile/pages/profile_image_camera.dart';
 import 'package:worksent_sesfikile/pages/tracking_page.dart';
-import 'package:worksent_sesfikile/utils/Utills.dart';
 import 'package:worksent_sesfikile/widgets/stacked_area_custom_color_line_chart.dart';
-import 'package:worksent_sesfikile/widgets/star_display.dart';
 import "package:flutter_image_compress/flutter_image_compress.dart";
 import "package:firebase_storage/firebase_storage.dart";
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -30,6 +31,7 @@ class _DriverState extends State<DriverPage> {
    DriverModel model;
   File profileImage;
   final  _bloc = DriverBloc();
+  final _vehicleBloc = VehicleBloc();
 
   DateTime startTime;
 
@@ -294,12 +296,38 @@ Widget _getSpeed(){
             ),
             SizedBox(height: 8),
             Divider(),
-            SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text("Assigned Vehicle"), Text("Some Car")],
-            ),
-            SizedBox(height: 8)
+            InkWell(
+              onTap:() async{
+                var results = await Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) {
+                    return ChooseVehiclePage();
+                  },
+                ));
+
+              if (results != null && results.containsKey('selectedVehicle')) {
+                VehicleModel returned = results['selectedVehicle'];
+              var vehicle = returned;
+              vehicle.driver = model;
+              
+              setState(() {
+                  model.vehicle = returned;
+              });
+              _bloc.updateDriverInfo(model);
+              _vehicleBloc.updateVehicleInfo(vehicle);
+    }
+              },
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[Text("Assigned Vehicle"),model.vehicle == null ?  Text("Assign Vehicle") : Text("${model.vehicle.vehicleType} ${model.vehicle.brand}")],
+                  ),
+                  SizedBox(height: 8)
+                ],
+              ),
+            )
+
           ])),
     );
   }
@@ -348,7 +376,7 @@ Widget _getSpeed(){
           Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => TrackingPage(selectedDate),
+                    builder: (BuildContext context) => TrackingPage(selectedDate, model),
              ));
       },
     ));

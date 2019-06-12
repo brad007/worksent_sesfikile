@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import "package:location/location.dart" as LocationManager;
+import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
+import 'package:worksent_sesfikile/blocs/drivers_bloc.dart';
+import 'package:worksent_sesfikile/models/driver_model.dart';
+import 'package:worksent_sesfikile/pages/tracking_page.dart';
 
 import 'add_driver_page.dart';
 import 'add_manager_page.dart';
@@ -16,11 +20,44 @@ class _HomePageState extends State<HomePage> {
   final mapZoomFactor = 13.0;
   CameraPosition position;
 
+  final _bloc = DriversBloc();
+  final _driverBloc = DriverBloc();
+  Set<Marker> mapMarkers = Set<Marker>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _bloc.driversStream.listen((drivers){
+      _updateMarkerDrivers(drivers.where((d)=>d.location != null).toList(growable: true));
+    });
+  }
+
+  _updateMarkerDrivers(List<DriverModel> drivers) async{
+    print("drivers size: ${drivers[0]}");
+    setState(() {
+       mapMarkers.clear();
+    mapMarkers.addAll(drivers.map((d){
+      final marker = Marker(
+        icon: BitmapDescriptor.fromAsset("images/car.png"),
+        markerId: MarkerId(d.id),
+        position: LatLng(d.location.coords.latitude, d.location.coords.longitude),
+        onTap: (){
+          _settingModalBottomSheet(d);
+        }
+      );
+      return marker;
+    }).toList(growable: true));
+    });
+   
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
         body: GoogleMap(
+          markers: mapMarkers,
             onMapCreated: _onMapCreated,
             onCameraMove: (cameraPosition) {},
             initialCameraPosition
@@ -33,6 +70,109 @@ class _HomePageState extends State<HomePage> {
     ,
     );
   }
+
+void _settingModalBottomSheet(DriverModel model){
+  _driverBloc.driverChange(model);
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc){
+          return Container(
+            color:const Color(0xFF162750) ,
+            child:  Wrap(
+            children: <Widget>[
+               ListTile(
+                title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[const Text("Name", style: TextStyle(color: Colors.white),),  Text('${model.firstName} ${model.lastName}', style: TextStyle(color: Colors.white),)],),
+                onTap: () => {}          
+            ),
+             Container(
+              margin: const EdgeInsets.only(left: 16, right: 16),
+              child: const Divider(color: Colors.grey,),
+            ),
+               ListTile(
+                title:Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[const Text("Vehicle", style: TextStyle(color: Colors.white),),model.vehicle != null ?  Text('${model.vehicle.brand} ${model.vehicle.vehicleType} - ${model.vehicle.vehicleRegistrationNumber}', style: TextStyle(color: Colors.white),) : Text("No Assigned Vehicle", style: TextStyle(color: Colors.white))]),
+                onTap: () => {},          
+            ),
+             Container(
+              margin: const EdgeInsets.only(left: 16, right: 16),
+              child: const Divider(color: Colors.grey,),
+            ),
+             ListTile(
+                title:Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[const Text("Speed", style: TextStyle(color: Colors.white),),
+                  Text('${model.location.coords.speed < 0 ? 0 : model.location.coords.speed*3.6}KM/h', style: TextStyle(color: Colors.white),)]),
+                onTap: () => {},          
+            ),
+             Container(
+              margin: const EdgeInsets.only(left: 16, right: 16),
+              child: const Divider(color: Colors.grey,),
+            ),
+            StreamBuilder(
+              initialData: 0.0,
+              stream: _driverBloc.distanceStream,
+              builder: (BuildContext context, AsyncSnapshot<double> snapshot){
+                if(snapshot.hasData){
+                  return  ListTile(
+                title:Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[const Text("Trip Distance", style: TextStyle(color: Colors.white),),
+                  Text('${snapshot.data}KM', style: TextStyle(color: Colors.white),)]),
+                onTap: () => {},          
+            );
+                }else{
+                return   ListTile(
+                title:Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[const Text("Trip Distance", style: TextStyle(color: Colors.white),),
+                  const Text('0KM', style: TextStyle(color: Colors.white),)]),
+                onTap: () => {},          
+            );
+                }
+              },
+            ),
+             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+            const Text("Track Trips", style: TextStyle(color: Colors.white), textAlign: TextAlign.center)
+              ],
+            ),
+             Container(
+              margin: EdgeInsets.all(4),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                  MaterialButton(
+              color: const Color(0xFFE51460),
+              child: const Text("Choose Date"),
+              onPressed: ()async{
+                 final DateTime picked = await showDatePicker(
+                context: context,
+                firstDate: DateTime(2019).subtract(Duration(days: 365)),
+                initialDate: DateTime.now(),
+                lastDate: DateTime.now().add(Duration(days: 1))
+              );
+               Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => TrackingPage(picked, model),
+             ));
+              },
+              textColor: Colors.white
+            )
+              ],
+            ),
+             Container(
+              margin: EdgeInsets.all(8),
+            )
+           
+            ],
+          ),
+          );
+      }
+    );
+}
+
 
   _onMapCreated(GoogleMapController controller) {
     if(position == null){

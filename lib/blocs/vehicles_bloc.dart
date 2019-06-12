@@ -10,7 +10,7 @@ class VehiclesBloc {
 
   final _vehiclesSubject = PublishSubject<List<VehicleModel>>();
 
-  Stream<List<VehicleModel>> get driversStream =>
+  Stream<List<VehicleModel>> get vehiclesStream =>
       _vehiclesSubject.stream.asBroadcastStream();
 
   VehiclesBloc() {

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
 import 'package:worksent_sesfikile/blocs/vehicle_bloc.dart';
+import 'package:worksent_sesfikile/models/driver_model.dart';
 import 'package:worksent_sesfikile/models/vehicle_model.dart';
+import 'package:worksent_sesfikile/pages/choose_driver_page.dart';
 import 'package:worksent_sesfikile/pages/profile_image_camera.dart';
 import "package:flutter_image_compress/flutter_image_compress.dart";
 import "package:firebase_storage/firebase_storage.dart";
@@ -21,12 +24,20 @@ class _VehicleState extends State<VehiclePage> {
   VehicleModel model;
   File profileImage;
   final _bloc = VehicleBloc();
+  final _driverBLoc = DriverBloc();
   _VehicleState(this.model);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _driverBLoc.driverChange(model.driver);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("${model.vehicleType}")),
+      appBar: AppBar(title: Text("${ model.vehicleType}")),
       body: ListView(
         children: <Widget>[
           _buildProfileImage(),
@@ -129,7 +140,7 @@ class _VehicleState extends State<VehiclePage> {
 
   Widget _buildVehicleInfo() {
     return Container(
-      margin: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -139,12 +150,29 @@ class _VehicleState extends State<VehiclePage> {
           Column(
             children: <Widget>[Text("${model.year}"), Text("Year")],
           ),
-          Column(
-            children: <Widget>[Text("Jane Doe"), Text("Current Driver")],
-          )
-        ],
-      ),
-    );
+          InkWell(
+            onTap: ()async{
+              var results = await Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) {
+                    return ChooseDriverPage();
+                  },
+                ));
+
+              if (results != null && results.containsKey('selectedDriver')) {
+                DriverModel returned = results['selectedDriver'];
+                var driver = returned;
+                driver.vehicle = model;
+
+                setState(() {
+                  model.driver = returned;
+                });
+              
+                _bloc.updateVehicleInfo(model);
+                _driverBLoc.updateDriverInfo(driver);
+            }},
+            child: Column(
+            children: <Widget>[model.driver != null ? Text("${model.driver.firstName} ${model.driver.lastName}") : Text("No Assigned Driver"), Text("Current Driver")],
+          ))]));
   }
 
   Widget _buildDateRange() {
@@ -173,7 +201,7 @@ class _VehicleState extends State<VehiclePage> {
           child: Column(children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text("Driver"), Text("Jane Doe")],
+              children: <Widget>[Text("Driver"),model.driver == null ? Text("No Assigned Driver") : Text("${model.driver.firstName} ${model.driver.lastName}")],
             ),
             SizedBox(height: 8),
             Divider(),

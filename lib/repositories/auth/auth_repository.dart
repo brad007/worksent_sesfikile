@@ -26,11 +26,12 @@ class AuthRepository {
       String password,
       String fullName,
       String companyName,
-      String companyAddress}) async {
+      String companyAddress, contactNumber}) async {
     FirebaseUser user =
         await _authProvider.createUser(email: email, password: password);
     var map = Map<String, dynamic>();
     map['email'] = email;
+    map['contactNumber'] = contactNumber;
     map['fullName'] = fullName;
     map['userId'] = user.uid;
     map['companyName'] = companyName;

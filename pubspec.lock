@@ -237,6 +237,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.0"
+  flutter_launcher_icons:
+    dependency: "direct main"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -277,6 +284,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.14"
+  google_places_picker:
+    dependency: "direct main"
+    description:
+      name: google_places_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2+1"
   graphs:
     dependency: transitive
     description:
@@ -340,6 +354,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.15.8"
+  intro_views_flutter:
+    dependency: "direct main"
+    description:
+      name: intro_views_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.6.0"
   io:
     dependency: transitive
     description:

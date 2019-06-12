@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:worksent_sesfikile/irrelevant.dart';
 import 'package:worksent_sesfikile/models/sign_up_data.dart';
@@ -13,6 +14,7 @@ class SignUpBloc {
   final _companyNameSubject = BehaviorSubject<String>();
   final _contactNameSubject = BehaviorSubject<String>();
   final _companyEmailSubject = BehaviorSubject<String>();
+  final _contactNumberSubject = BehaviorSubject<String>();
   final _companyAddressSubject = BehaviorSubject<String>();
   final _branchSubject = BehaviorSubject<String>.seeded("");
   final _divisionSubject = BehaviorSubject<String>.seeded("");
@@ -29,6 +31,7 @@ class SignUpBloc {
   final _showCompanyNameError = BehaviorSubject<String>();
   final _showContactNameError = BehaviorSubject<String>();
   final _showCompanyEmailError = BehaviorSubject<String>();
+  final _showContactNumberError = BehaviorSubject<String>();
   final _showCompanyAddressError = BehaviorSubject<String>();
   final _showPasswordError = BehaviorSubject<String>();
   final _showConfirmPasswordError = BehaviorSubject<String>();
@@ -38,8 +41,9 @@ class SignUpBloc {
 
   Function(String) get contactNameChanged => _contactNameSubject.sink.add;
 
-  Function(String) get companyEmailChanged =>
-      _companyEmailSubject.sink.add;
+  Function(String) get companyEmailChanged => _companyEmailSubject.sink.add;
+
+  Function(String) get contactNumberChanged => _contactNumberSubject.sink.add;
 
   Function(String) get companyAddressChanged => _companyAddressSubject.sink.add;
 
@@ -68,6 +72,8 @@ class SignUpBloc {
 
   Stream<String> get companyEmailStream => _companyEmailSubject.stream;
 
+  Stream<String> get contactNumberStream => _contactNumberSubject.stream;
+
   Stream<String> get companyAddressStream => _companyAddressSubject.stream;
 
   Stream<String> get branchStream => _branchSubject.stream;
@@ -94,21 +100,24 @@ class SignUpBloc {
 
   Stream<String> get companyEmailError => _showCompanyEmailError.stream;
 
+  Stream<String> get contactNumberError => _showContactNumberError.stream;
+
   Stream<UserModel> get registered => _registered.stream;
 
   SignUpBloc() {
     BehaviorSubject<SignUpData> signUpCredentialsStream =
-        Observable.combineLatest8(
+        Observable.combineLatest9(
             companyNameStream,
             contactNameStream,
             companyEmailStream,
+            contactNumberStream,
             companyAddressStream,
             branchStream,
             divisionStream,
             passwordStream,
-            confirmPasswordStream, (companyName, contactName, companyEmail,
+            confirmPasswordStream, (companyName, contactName, companyEmail, contactNumber,
                 companyAddress, branch, division, password, confirmPassword) {
-      return SignUpData(companyName, contactName, companyEmail, companyAddress,
+      return SignUpData(companyName, contactName, companyEmail,contactNumber ,companyAddress,
           branch, division, password, confirmPassword);
     }).shareValue();
 
@@ -117,6 +126,7 @@ class SignUpBloc {
       return signUpData.companyName.isNotEmpty &&
           signUpData.contactName.isNotEmpty &&
           signUpData.companyEmail.isNotEmpty &&
+          signUpData.contactNumber.isNotEmpty &&
           signUpData.companyAddress.isNotEmpty &&
           signUpData.password.isNotEmpty &&
           signUpData.confirmPassword.isNotEmpty;
@@ -131,12 +141,19 @@ class SignUpBloc {
       String companyName = signUpData.companyName;
       String contactName = signUpData.contactName;
       String companyEmail = signUpData.companyEmail;
+      String contactNumber = signUpData.contactNumber;
       String companyAddress = signUpData.companyAddress;
       String password = signUpData.password;
       String confirmPassword = signUpData.confirmPassword;
 
-      return _validateCredentials(companyName, contactName, companyEmail,
-          companyAddress, password, confirmPassword);
+      return _validateCredentials(
+        companyName, 
+        contactName, 
+        companyEmail,
+        contactNumber,
+        companyAddress, 
+        password, 
+        confirmPassword);
     });
 
     Observable.combineLatest2(signUpCredentialsValidation, loginStream,
@@ -144,6 +161,8 @@ class SignUpBloc {
       _showGenericError.sink.add(null);
       _showCompanyNameError.sink.add(null);
       _showContactNameError.sink.add(null);
+      _showCompanyEmailError.sink.add(null);
+      _showContactNumberError.sink.add(null);
       _showCompanyAddressError.sink.add(null);
       _showPasswordError.sink.add(null);
       _showConfirmPasswordError.sink.add(null);
@@ -153,6 +172,7 @@ class SignUpBloc {
           _showCompanyNameError.sink.add("Missing Company Name.");
           _showContactNameError.sink.add("Missing Contact Name.");
           _showCompanyEmailError.sink.add("Missing Company Email.");
+          _showContactNumberError.sink.add("Missing Contact Number.");
           _showCompanyAddressError.sink.add("Missing Company Address.");
           _showPasswordError.sink.add("Missing Password.");
           _showConfirmPasswordError.sink.add("Missing Password.");
@@ -166,6 +186,9 @@ class SignUpBloc {
           break;
         case ValidationType.MISSING_COMPANY_EMAIL:
           _showCompanyEmailError.sink.add("Missing Company Email.");
+          break;
+        case ValidationType.MISSING_CONTACT_NUMBER:
+          _showContactNumberError.sink.add("Missing Contact Number.");
           break;
         case ValidationType.MISSING_COMPANY_ADDRESS:
           _showCompanyAddressError.sink.add("Missing Company Address.");
@@ -192,12 +215,14 @@ class SignUpBloc {
       String companyName = signUpData.companyName;
       String contactName = signUpData.contactName;
       String companyEmail = signUpData.companyEmail;
+      String contactNumber = signUpData.contactNumber;
       String companyAddress = signUpData.companyAddress;
       String password = signUpData.password;
       _showLoader.sink.add(true);
       return _authRepository
           .createUser(
             email: companyEmail,
+            contactNumber: contactNumber,
             password: password,
             fullName: contactName,
             companyName: companyName,
@@ -208,20 +233,28 @@ class SignUpBloc {
       _showLoader.sink.add(false);
       _registered.sink.add(user);
     }).onError((error){
-      print("sign up error: $error");
+      _showLoader.sink.add(false);
+      _handleError(error);
     });
+  }
+
+  _handleError(PlatformException e){
+      print("error: ${e.message}");
+      _showGenericError.sink.add(e.message);
   }
 
   _validateCredentials(
       String companyName,
       String contactName,
       String companyEmail,
+      String contactNumber,
       String companyAddress,
       String password,
       String confirmPassword) {
     if (companyName.isEmpty &&
         contactName.isEmpty &&
         companyEmail.isEmpty &&
+        contactNumber.isEmpty &&
         companyAddress.isEmpty &&
         password.isEmpty &&
         confirmPassword.isEmpty) {
@@ -238,6 +271,8 @@ class SignUpBloc {
       return ValidationType.MISSING_CONFIRM_PASSWORD;
     } else if (password.length != confirmPassword.length) {
       return ValidationType.INVALID_PASSWORD;
+    } else if(contactNumber.isEmpty){
+      return ValidationType.MISSING_CONTACT_NUMBER;
     } else {
       return ValidationType.VALID;
     }
@@ -249,6 +284,7 @@ enum ValidationType {
   MISSING_COMPANY_NAME,
   MISSING_CONTACT_NAME,
   MISSING_COMPANY_EMAIL,
+  MISSING_CONTACT_NUMBER,
   MISSING_COMPANY_ADDRESS,
   MISSING_PASSWORD,
   MISSING_CONFIRM_PASSWORD,

@@ -15,6 +15,7 @@ class DriverBloc{
   final _speedSubject = PublishSubject<double>();
   final _durationSubject = PublishSubject<String>();
   final _dateSubject = PublishSubject<DateTime>();
+  final _driverSubject = PublishSubject<DriverModel>();
 
   Stream<List<LocationModel>> get locationsStream => 
   _locationsSubject.stream.asBroadcastStream();
@@ -23,15 +24,28 @@ class DriverBloc{
   Stream<double> get speedStream => _speedSubject.stream.asBroadcastStream();
   Stream<String> get durationStream => _durationSubject.stream.asBroadcastStream();
   Stream<DateTime> get dateStream => _dateSubject.stream;
+  Stream<DriverModel> get driverStream => _driverSubject.stream;
+
+
 
   DriverBloc(){
     changeDate(DateTime.now());
 
-    _dateSubject.listen((date){
-      _locationRepository.getDateLise(date).listen((QuerySnapshot snapshot){
+    Observable.combineLatest2(dateStream, driverStream, (DateTime date, DriverModel driver){
+      var map = Map<String, dynamic>();
+      map['date'] = date;
+      map['driver'] = driver;
+      return map;
+    }).shareValue().listen((map){
+      _locationRepository.getDateList(map['date'], map['driver']).listen((QuerySnapshot snapshot){
         _init(snapshot);
       });
     });
+    
+  }
+
+  driverChange(DriverModel driver){
+    _driverSubject.sink.add(driver);
   }
 
 

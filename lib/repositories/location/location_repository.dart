@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:worksent_sesfikile/models/driver_model.dart';
 
 class LocationRepository{
   Firestore _firestore = Firestore.instance;
@@ -25,7 +26,7 @@ class LocationRepository{
     return snapshots;
   }
 
-  Stream<QuerySnapshot> getDateLise(DateTime date){
+  Stream<QuerySnapshot> getDateList(DateTime date, DriverModel driver){
     
     final startDateTime = date.subtract(Duration(
     hours: date.hour,
@@ -37,7 +38,7 @@ class LocationRepository{
 
     final endDay = startDateTime.add(Duration(days: 1)).toIso8601String();
     final startDate = startDateTime.toIso8601String();
-    Stream<QuerySnapshot> snapshots = _firestore.collection("locations")
+    Stream<QuerySnapshot> snapshots = _firestore.collection("locations").document(driver.email).collection("location")
     .where("location.timestamp", 
     isGreaterThanOrEqualTo: startDate,
     isLessThanOrEqualTo: endDay)

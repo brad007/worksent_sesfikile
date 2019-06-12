@@ -26,6 +26,12 @@ class _ViewDriverState extends State<ViewDriverPage> {
   _ViewDriverState(this.model);
 
   @override
+  void initState() {
+    super.initState();
+    _bloc.driverChange(model);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

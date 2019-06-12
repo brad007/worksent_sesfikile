@@ -1,3 +1,4 @@
+import 'package:worksent_sesfikile/models/driver_model.dart';
 import 'package:worksent_sesfikile/models/model.dart';
 
 class VehicleModel extends Model {
@@ -12,6 +13,7 @@ class VehicleModel extends Model {
   String insuranceCompany;
   String vehicleRegistrationNumber;
   String company;
+  DriverModel driver;
 
   VehicleModel(String id,
       {this.vehicleType,
@@ -23,7 +25,9 @@ class VehicleModel extends Model {
       this.vehicleStorageAddress,
       this.insuranceCompany,
       this.company,
-      this.vehicleRegistrationNumber})
+      this.vehicleRegistrationNumber,
+      this.driver
+      })
       : super(id, DateTime.now().millisecondsSinceEpoch,
             DateTime.now().millisecondsSinceEpoch);
 
@@ -39,10 +43,37 @@ class VehicleModel extends Model {
     this.insuranceCompany = obj['insuranceCompany'];
     this.vehicleRegistrationNumber = obj['vehicleRegistrationNumber'];
     this.company = obj['company'];
+    
+    if(obj.containsKey('driver') && obj['driver'] != null){
+      this.driver = DriverModel.map(obj['driver']);
+    }else{
+      this.driver = null;
+    }
   }
 
   @override
   Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map['vehicleType'] = this.vehicleType;
+    map['brand'] = this.brand;
+    map['numberPlate'] = this.numberPlate;
+    map['year'] = this.year;
+    map['pictureUrl'] = this.pictureUrl;
+    map['branch'] = this.branch;
+    map['currentKMs'] = this.currentKMs;
+    map['vehicleStorageAddress'] = this.vehicleStorageAddress;
+    map['insuranceCompany'] = this.insuranceCompany;
+    map['vehicleRegistrationNumber'] = this.vehicleRegistrationNumber;
+    map['company'] = this.company;
+    if(this.driver != null){
+      map['driver'] = this.driver.toMapWithoutVehicle();
+    }else{
+      map['driver'] = null;
+    }
+    return map;
+  }
+
+  Map<String, dynamic> toMapWithoutDriver() {
     var map = Map<String, dynamic>();
     map['vehicleType'] = this.vehicleType;
     map['brand'] = this.brand;
@@ -71,5 +102,10 @@ class VehicleModel extends Model {
     this.insuranceCompany = map['insuranceCompany'];
     this.vehicleRegistrationNumber = map['vehicleRegistrationNumber'];
     this.company = map['company'];
+    if(map.containsKey('driver') && map['driver'] != null){
+      this.driver = DriverModel.map(map['driver']);
+    }else{
+      map['driver'] = null;
+    }
   }
 }

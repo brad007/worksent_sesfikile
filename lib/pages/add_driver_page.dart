@@ -61,6 +61,7 @@ class _AddDriverState extends State<AddDriverPage> {
 
   Widget _buildMobileNumber() {
     return FormTextInput(
+        isNumber: true,
         hint: "Mobile Number",
         stream: _bloc.mobileNumberError,
         onChange: _bloc.mobileNumberChanged);

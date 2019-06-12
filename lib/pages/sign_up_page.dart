@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_places_picker/google_places_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worksent_sesfikile/blocs/sign_up_bloc.dart';
 import 'package:worksent_sesfikile/irrelevant.dart';
@@ -14,14 +15,17 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUpPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _bloc = SignUpBloc();
   SharedPreferences _preferences;
-  bool isTaxiAssociation;
+  bool isCommercial;
+  String placeName;
+  String branchValue;
 
   @override
   void initState() {
     super.initState();
-    isTaxiAssociation = false;
+    isCommercial = false;
 
     SharedPreferences.getInstance().then((SharedPreferences sp) {
       _preferences = sp;
@@ -31,6 +35,16 @@ class _SignUpState extends State<SignUpPage> {
       if (user != null) {
         _saveIdToken(user.id);
         _navigateToHome();
+      }
+    });
+
+    _bloc.genericError.listen((error){
+      if(error != null){
+        _scaffoldKey.currentState.showSnackBar(
+         SnackBar(
+          content: Text(error),
+          duration: Duration(seconds: 3),
+        ));
       }
     });
   }
@@ -51,6 +65,7 @@ class _SignUpState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      key: _scaffoldKey,
         body: FormListView(children: <Widget>[
       Padding(
         padding:
@@ -64,16 +79,42 @@ class _SignUpState extends State<SignUpPage> {
       _buildCompanyName(),
       _buildContactName(),
       _buildCompanyEmail(),
+      _buildMobileName(),
       _buildCompanyAddress(),
       _buildCommercialToggle(),
       _buildBranch(),
       _buildDivision(),
       _buildPassword(),
       _buildConfirmPassword(),
+      _loader(),
       _buildSignUpButton(),
       _buildSwitchToLoginButton(),
       SizedBox(height: 16)
     ]));
+  }
+
+  Widget _loader(){
+    return StreamBuilder(
+      initialData: false,
+      stream: _bloc.showLoader,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+        if(snapshot.hasData){
+          if(snapshot.data){
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CircularProgressIndicator()
+              ],
+            ) ;
+          }else{
+            return Container();
+          }
+        }else{
+          return Container();
+        }
+      },
+    );
   }
 
   Widget _buildCompanyName() {
@@ -100,16 +141,36 @@ class _SignUpState extends State<SignUpPage> {
     );
   }
 
-  Widget _buildCompanyAddress() {
+  Widget _buildMobileName() {
     return FormTextInput(
-      hint: "Company Address",
-      onChange: _bloc.companyAddressChanged,
-      stream: _bloc.companyAddressError,
+      hint: "Contact Number",
+      isNumber: true,
+      onChange: _bloc.contactNumberChanged,
+      stream: _bloc.contactNumberError,
     );
   }
 
+  Widget _buildCompanyAddress()  {
+    return InkWell(
+      child: Container(padding: EdgeInsets.all(16),child:Text(placeName == null ? "Company Address":placeName, style: TextStyle(fontWeight: FontWeight.bold),)  ,),
+      onTap: () async{
+        var place = await PluginGooglePlacePicker.showAutocomplete(mode: PlaceAutocompleteMode.MODE_FULLSCREEN, countryCode: "ZA");
+        _bloc.companyAddressChanged(place.name);
+        setState(() {
+          placeName = place.name;
+        });
+      },
+    );
+     
+    // return FormTextInput(
+    //   hint: "Company Address",
+    //   onChange: _bloc.companyAddressChanged,
+    //   stream: _bloc.companyAddressError,
+    // );
+  }
+
   Widget _buildBranch() {
-    if (!isTaxiAssociation) {
+    if (isCommercial) {
       return FormTextInput(
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
           hint: "Branch - If Required *",
@@ -119,6 +180,7 @@ class _SignUpState extends State<SignUpPage> {
         padding: const EdgeInsets.only(left: 16, right: 16),
         child: DropdownButton(
           hint: Text("Taxi Association"),
+          value: branchValue,
           items: <String>[
             "CODETA",
             "CATA",
@@ -129,7 +191,7 @@ class _SignUpState extends State<SignUpPage> {
             "GREATER CAPE",
             "NORTHERNS",
             "TWO OCEANS",
-            "WEST COAST]"
+            "WEST COAST"
           ].map((String value) {
             return DropdownMenuItem<String>(
               value: value,
@@ -138,6 +200,9 @@ class _SignUpState extends State<SignUpPage> {
           }).toList(),
           onChanged: (String value) {
             _bloc.branchChanged(value);
+            setState(() {
+             branchValue = value; 
+            });
           },
         ),
       );
@@ -145,8 +210,8 @@ class _SignUpState extends State<SignUpPage> {
   }
 
   Widget _buildDivision() {
-    return FormTextInput(
-        hint: "Division - If Required *", onChange: _bloc.divisionChanged);
+    return isCommercial? FormTextInput(
+        hint: "Division - If Required *", onChange: _bloc.divisionChanged): Container();
   }
 
   Widget _buildPassword() {
@@ -212,19 +277,21 @@ class _SignUpState extends State<SignUpPage> {
     );
   }
 
+  
+
   Widget _buildCommercialToggle() {
     return Container(
       margin: EdgeInsets.only(left: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(isTaxiAssociation ? "Taxi Association" : "Commercial"),
+          Text(isCommercial? "Taxi Association" : "Commercial"),
           Switch(
-              value: isTaxiAssociation,
+              value: isCommercial,
               onChanged: (bool changed) {
                 _bloc.branchChanged(null);
                 setState(() {
-                  isTaxiAssociation = changed;
+                  isCommercial = changed;
                 });
               })
         ],

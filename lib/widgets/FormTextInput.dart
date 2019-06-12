@@ -5,12 +5,14 @@ class FormTextInput extends StatelessWidget {
   final ValueChanged<String> onChange;
   final Stream stream;
   final EdgeInsets padding;
+  final bool isNumber;
 
   FormTextInput(
       {this.hint,
       this.onChange,
       this.stream,
-      this.padding = const EdgeInsets.all(16)});
+      this.padding = const EdgeInsets.all(16),
+      this.isNumber = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class FormTextInput extends StatelessWidget {
               return Padding(
                 padding: padding,
                 child: TextField(
+                  keyboardType: isNumber ? TextInputType.number : TextInputType.text,
                   decoration: InputDecoration(hintText: hint),
                   onChanged: onChange,
                 ),

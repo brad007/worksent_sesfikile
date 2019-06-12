@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
+import 'package:worksent_sesfikile/models/driver_model.dart';
 
 class TrackingPage extends StatefulWidget {
   final DateTime selectedDate;
+  final DriverModel driver;
 
 
-  TrackingPage(this.selectedDate, {Key key}) : super(key: key);
+  TrackingPage(this.selectedDate, this.driver, {Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _TrackingState(this.selectedDate);
+  State<StatefulWidget> createState() => _TrackingState(this.selectedDate, this.driver);
 }
 
 class _TrackingState extends State<TrackingPage> {
@@ -21,14 +23,16 @@ class _TrackingState extends State<TrackingPage> {
   int lastDate = 0;
 
   var selectedDate;
+  final DriverModel driver;
 
-  _TrackingState(this.selectedDate);
+  _TrackingState(this.selectedDate, this.driver);
 
   @override
   void initState() {
     super.initState();
 
     _bloc.changeDate(selectedDate);
+    _bloc.driverChange(driver);
 
     polylines = Polyline(
         polylineId: PolylineId("polyline_id"),
@@ -45,6 +49,7 @@ class _TrackingState extends State<TrackingPage> {
                   .toList());
 
           var startMarker = Marker(
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
               infoWindow: InfoWindow(title: "Start"),
               markerId: MarkerId("start_marker"),
               position:
@@ -106,7 +111,7 @@ class _TrackingState extends State<TrackingPage> {
                       Icon(Icons.date_range),
                       SizedBox(width: 16),
                       Text(
-                          "Last Date: ${DateFormat.yMMMMEEEEd().format(DateTime.fromMillisecondsSinceEpoch(lastDate))}",
+                          "Date: ${DateFormat.yMMMMEEEEd().format(selectedDate)}",
                           style: TextStyle(fontSize: 20))
                     ],
                   )
