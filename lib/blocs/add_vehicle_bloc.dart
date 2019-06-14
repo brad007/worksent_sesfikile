@@ -17,7 +17,7 @@ class AddVehicleBloc {
   final _branchSubject = BehaviorSubject<String>();
   final _currentKMSubject = BehaviorSubject<String>();
   final _vehicleAddressSubject = BehaviorSubject<String>();
-  final _insuranceCompanySubject = BehaviorSubject<String>();
+  final _insuranceCompanySubject = BehaviorSubject<String>.seeded("");
   final _vehicleRegisterationSubject = BehaviorSubject<String>();
 
   final _createVehicleSubject = PublishSubject<Irrelevant>();
@@ -34,7 +34,6 @@ class AddVehicleBloc {
   final _branchError = BehaviorSubject<String>();
   final _currentKMError = BehaviorSubject<String>();
   final _vehicleAddressError = BehaviorSubject<String>();
-  final _insuranceCompanyError = BehaviorSubject<String>();
   final _vehicleRegisterationError = BehaviorSubject<String>();
 
   //functions
@@ -104,7 +103,6 @@ class AddVehicleBloc {
 
   Stream<String> get vehicleAddressError => _vehicleAddressError.stream;
 
-  Stream<String> get insuranceCompanyError => _insuranceCompanyError.stream;
 
   Stream<String> get vehicleRegistrationError =>
       _vehicleRegisterationError.stream;
@@ -151,7 +149,6 @@ class AddVehicleBloc {
           data.branch.isNotEmpty &&
           data.currentKMs.isNotEmpty &&
           data.vehicleStorageAddress.isNotEmpty &&
-          data.insuranceCompany.isNotEmpty &&
           data.vehicleRegistrationNumber.isNotEmpty;
     });
 
@@ -168,7 +165,6 @@ class AddVehicleBloc {
       String branch = data.branch;
       String currentKMs = data.currentKMs;
       String vehicleStorageAddress = data.vehicleStorageAddress;
-      String insuranceCompany = data.insuranceCompany;
       String vehicleRegistrationNumber = data.vehicleRegistrationNumber;
 
       return validateFields(
@@ -179,7 +175,6 @@ class AddVehicleBloc {
           branch,
           currentKMs,
           vehicleStorageAddress,
-          insuranceCompany,
           vehicleRegistrationNumber);
     });
 
@@ -194,7 +189,6 @@ class AddVehicleBloc {
       _branchError.sink.add(null);
       _currentKMError.sink.add(null);
       _vehicleAddressError.sink.add(null);
-      _insuranceCompanyError.sink.add(null);
       _vehicleRegisterationError.sink.add(null);
 
       switch (validationType) {
@@ -206,7 +200,6 @@ class AddVehicleBloc {
           _branchError.sink.add("Missing Branch.");
           _currentKMError.sink.add("Missing Current KMs.");
           _vehicleAddressError.sink.add("Missing Vehicle Storage Address.");
-          _insuranceCompanyError.sink.add("Missing Insurance Company.");
           _vehicleRegisterationError.sink
               .add("Missing Vehicle Registration Number.");
           break;
@@ -230,9 +223,6 @@ class AddVehicleBloc {
           break;
         case ValidationType.MISSING_VEHICLE_ADDRESS:
           _vehicleAddressError.sink.add("Missing Vehicle Storage Address.");
-          break;
-        case ValidationType.MISSING_INSURANCE_COMPANY:
-          _insuranceCompanyError.sink.add("Missing Insurance Company.");
           break;
         case ValidationType.MISSING_VEHICLE_REGISTRATION:
           _vehicleRegisterationError.sink
@@ -284,7 +274,6 @@ class AddVehicleBloc {
       String branch,
       String currentKMs,
       String vehicleStorageAddress,
-      String insuranceCompany,
       String vehicleRegistrationNumber) {
     if (vehicleType.isEmpty &&
         brand.isEmpty &&
@@ -293,7 +282,6 @@ class AddVehicleBloc {
         branch.isEmpty &&
         currentKMs.isEmpty &&
         vehicleStorageAddress.isEmpty &&
-        insuranceCompany.isEmpty &&
         vehicleRegistrationNumber.isEmpty) {
       return ValidationType.MISSING_FIELDS;
     } else if (vehicleType.isEmpty) {
@@ -310,8 +298,6 @@ class AddVehicleBloc {
       return ValidationType.MISSING_CURRENT_KMS;
     } else if (vehicleStorageAddress.isEmpty) {
       return ValidationType.MISSING_VEHICLE_ADDRESS;
-    } else if (insuranceCompany.isEmpty) {
-      return ValidationType.MISSING_INSURANCE_COMPANY;
     } else if (vehicleRegistrationNumber.isEmpty) {
       return ValidationType.MISSING_VEHICLE_REGISTRATION;
     } else {
@@ -329,7 +315,6 @@ enum ValidationType {
   MISSING_BRANCH,
   MISSING_CURRENT_KMS,
   MISSING_VEHICLE_ADDRESS,
-  MISSING_INSURANCE_COMPANY,
   MISSING_VEHICLE_REGISTRATION,
   VALID
 }

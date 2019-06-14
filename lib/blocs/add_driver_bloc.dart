@@ -259,13 +259,14 @@ class AddDriverBloc {
       var driverModel = DriverModel(null,
           firstName: data.firstName,
           lastName: data.lastName,
-          mobileNumber: data.firstName,
+          mobileNumber: data.mobileNumber,
           email: data.email,
-          driversLicenseUrl: data.driversLicense,
-          pdpLicenseUrl: data.pdpLicense,
+          driversLicense: data.driversLicense,
+          pdpLicense: data.pdpLicense,
           pdpExpireDate: data.pdpExpireDate,
           branch: data.branch,
-          driversLicenseExpireDate: data.driversLicenceExpireDate);
+          driversLicenseExpireDate: data.driversLicenceExpireDate,
+          clockedIn: false);
 
       return _authRepository.getUser().then((user) {
         driverModel.company = user.companyName;

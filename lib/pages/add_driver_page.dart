@@ -11,7 +11,8 @@ class AddDriverPage extends StatefulWidget {
 
 class _AddDriverState extends State<AddDriverPage> {
   final _bloc = AddDriverBloc();
-
+  DateTime selectedLicenseExpiryDate;
+  DateTime selectedPDPExpiryDate;
   @override
   void initState() {
     super.initState();
@@ -100,10 +101,24 @@ class _AddDriverState extends State<AddDriverPage> {
   }
 
   Widget _buildDriversLicenseExpireDate() {
-    return FormTextInput(
-      hint: "Drivers License Expire Date",
-      stream: _bloc.driversLicenseExpireDateError,
-      onChange: _bloc.driversLicenseExpireDateChanged,
+    return InkWell(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Text(selectedLicenseExpiryDate == null? "Drivers License Expire Date" : "Drivers License Expire Date: ${selectedLicenseExpiryDate.day}/${selectedLicenseExpiryDate.month}/${selectedLicenseExpiryDate.year}", style: TextStyle(fontWeight: FontWeight.bold),),
+      ),
+      onTap: () async{
+                final DateTime picked = await showDatePicker(
+                context: context,
+                firstDate: DateTime.now(),
+                initialDate: DateTime.now(),
+                lastDate: DateTime.now().add(Duration(days: 365*10))
+              );
+
+                setState((){
+                  selectedLicenseExpiryDate = picked;
+                });
+              _bloc.driversLicenseExpireDateChanged("${picked.millisecondsSinceEpoch}");
+      },
     );
   }
 
@@ -140,10 +155,24 @@ class _AddDriverState extends State<AddDriverPage> {
   }
 
   Widget _buildPDPLicenseExpireDate() {
-    return FormTextInput(
-      hint: "PDP License Numbe Expire Date",
-      stream: _bloc.pdpExpireDateError,
-      onChange: _bloc.pdpExpireDateChanged,
+    return InkWell(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Text(selectedPDPExpiryDate == null? "PDP License Number Expire Date" : "PDP License Number Expire Date: ${selectedPDPExpiryDate.day}/${selectedPDPExpiryDate.month}/${selectedPDPExpiryDate.year}", style: TextStyle(fontWeight: FontWeight.bold),),
+      ),
+      onTap: () async{
+                final DateTime picked = await showDatePicker(
+                context: context,
+                firstDate: DateTime.now(),
+                initialDate: DateTime.now(),
+                lastDate: DateTime.now().add(Duration(days: 365*10))
+              );
+
+                setState((){
+                  selectedPDPExpiryDate = picked;
+                });
+              _bloc.pdpExpireDateChanged("${picked.millisecondsSinceEpoch}");
+      },
     );
   }
 }

@@ -161,12 +161,6 @@ class _SignUpState extends State<SignUpPage> {
         });
       },
     );
-     
-    // return FormTextInput(
-    //   hint: "Company Address",
-    //   onChange: _bloc.companyAddressChanged,
-    //   stream: _bloc.companyAddressError,
-    // );
   }
 
   Widget _buildBranch() {
@@ -285,7 +279,7 @@ class _SignUpState extends State<SignUpPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(isCommercial? "Taxi Association" : "Commercial"),
+          Text(!isCommercial? "Taxi Association" : "Commercial"),
           Switch(
               value: isCommercial,
               onChanged: (bool changed) {

@@ -18,6 +18,7 @@ class _ChooseDriverPageState extends State<ChooseDriverPage> {
     return Container(
        child: Scaffold(
          appBar: AppBar(title: Text("Choose Driver"),),
+         body: _buildDrivers(),
        ),
     );
   }
@@ -27,7 +28,7 @@ class _ChooseDriverPageState extends State<ChooseDriverPage> {
       initialData: null,
       stream: _bloc.driversStream,
       builder: (BuildContext context, AsyncSnapshot<List<DriverModel>> snapshot){
-        ListView(
+        return ListView(
           children: snapshot.data.map((d){
             return DriverWidget(model: d, onTap: (){
               Navigator.of(context).pop({'selectedDriver': d});

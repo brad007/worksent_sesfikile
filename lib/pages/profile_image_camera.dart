@@ -61,12 +61,12 @@ class ProfileEditCameraState extends State<ProfileEditCamera> {
       backgroundColor: Colors.black,
       body: Stack(
         children: <Widget>[
-          cameraController.value.isInitialized != true
+        cameraController != null ? ( cameraController.value.isInitialized != true
               ? Container(color: Colors.black)
               : AspectRatio(
                   aspectRatio: cameraController.value.aspectRatio,
                   child: CameraPreview(cameraController),
-                ),
+                )): Container(),
           InkWell(
             onTap: () {
               Navigator.pop(context, _image);

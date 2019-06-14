@@ -11,6 +11,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 
+import 'package:worksent_sesfikile/utils/Utills.dart';
+
 class VehiclePage extends StatefulWidget {
   final VehicleModel model;
 
@@ -26,6 +28,7 @@ class _VehicleState extends State<VehiclePage> {
   final _bloc = VehicleBloc();
   final _driverBLoc = DriverBloc();
   _VehicleState(this.model);
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -43,7 +46,8 @@ class _VehicleState extends State<VehiclePage> {
           _buildProfileImage(),
           _buildVehicleInfo(),
           _buildDateRange(),
-          _buildInfo()
+          _buildInfo(),
+          _buildLoading()
         ],
       ),
     );
@@ -63,7 +67,7 @@ class _VehicleState extends State<VehiclePage> {
   }
 
   Widget _profileImage() {
-    final buttonSize = 50.0;
+    final buttonSize = 100.0;
     return InkWell(
         child: Container(
           child: model.pictureUrl != null?
@@ -73,9 +77,12 @@ class _VehicleState extends State<VehiclePage> {
                     model.pictureUrl,
                     fit: BoxFit.cover,
                   ))
-              : Icon(
-                  Icons.center_focus_weak
-                ),
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(buttonSize * 0.5),
+                  child: Image.asset(
+                    "images/bus.png",
+                    fit: BoxFit.cover,
+                  )),
           width: buttonSize,
           height: buttonSize,
           decoration: BoxDecoration(
@@ -97,6 +104,9 @@ class _VehicleState extends State<VehiclePage> {
   }
 
      _save() async {
+        setState(() {
+       isLoading = true; 
+      });
     VehicleModel updateUser = model;
         if (profileImage != null) {
 
@@ -135,7 +145,9 @@ class _VehicleState extends State<VehiclePage> {
         }
         _bloc.updateVehicleInfo(updateUser);
 //        Navigator.pop(context, updateUser);
-
+ setState(() {
+       isLoading = false; 
+      });
   }
 
   Widget _buildVehicleInfo() {
@@ -152,6 +164,9 @@ class _VehicleState extends State<VehiclePage> {
           ),
           InkWell(
             onTap: ()async{
+               setState(() {
+       isLoading = true; 
+      });
               var results = await Navigator.of(context).push(MaterialPageRoute<dynamic>(
                   builder: (BuildContext context) {
                     return ChooseDriverPage();
@@ -169,6 +184,10 @@ class _VehicleState extends State<VehiclePage> {
               
                 _bloc.updateVehicleInfo(model);
                 _driverBLoc.updateDriverInfo(driver);
+
+                 setState(() {
+       isLoading = false; 
+      });
             }},
             child: Column(
             children: <Widget>[model.driver != null ? Text("${model.driver.firstName} ${model.driver.lastName}") : Text("No Assigned Driver"), Text("Current Driver")],
@@ -219,7 +238,7 @@ class _VehicleState extends State<VehiclePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Branch/Division/Route"),
+                Text(!Utils.isTaxiAssociation(model.branch) ? "Branch/Division/Route" : "Route"),
                 Text("${model.branch}")
               ],
             ),
@@ -252,5 +271,17 @@ class _VehicleState extends State<VehiclePage> {
             )
           ])),
     );
+  }
+
+   Widget _buildLoading(){
+    return Container(
+      margin: EdgeInsets.all(16),
+      child: isLoading ? Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+      
+        CircularProgressIndicator()
+      ],
+    ) : Container(),) ;
   }
 }

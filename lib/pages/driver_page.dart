@@ -49,6 +49,8 @@ class _DriverState extends State<DriverPage> {
   @override
   void initState() {
     super.initState();
+    _bloc.driverChange(model);
+    _bloc.changeDate(DateTime.now());
     selectedDate = DateTime.now();
     polylines = Polyline(
         polylineId: PolylineId("polyline_id"),
@@ -125,7 +127,7 @@ class _DriverState extends State<DriverPage> {
       child: Row(
         children: <Widget>[
           Column(
-            children: <Widget>[Text("125"), Text("Trips")],
+            children: <Widget>[Text("1"), Text("Trips")],
           ),
           Spacer(),
           Column(
@@ -223,6 +225,9 @@ class _DriverState extends State<DriverPage> {
       stream: _bloc.dateStream,
       builder: (BuildContext context, AsyncSnapshot<DateTime> snapshot){
         var date = snapshot.data;
+        if(date == null){
+          date = DateTime.now();
+        }
         return Text("${date.day}-${date.month}-${date.year}");
       },
     );
@@ -247,7 +252,7 @@ class _DriverState extends State<DriverPage> {
                 setState((){
                   selectedDate = picked;
                 });
-              _bloc.changeDate(picked);
+              _bloc.changeDate(selectedDate);
 
             },
             child: const Text("Choose Date"),
@@ -279,7 +284,7 @@ Widget _getSpeed(){
     initialData: 0.0,
     stream: _bloc.speedStream,
      builder: (BuildContext context, AsyncSnapshot<double> snapshot){
-      return Text("${snapshot.data*3.6}KM/h");
+      return Text("${(snapshot.data*3.6).toStringAsFixed(2)}KM/h");
     },
   );
 }
@@ -347,22 +352,25 @@ Widget _getSpeed(){
 
   Widget _buildGraph(){
    return
-   Container(
-     height: 240,
-     child:
      StreamBuilder(
        initialData: null,
        stream: _bloc.locationsStream,
        builder: (BuildContext ctxt, AsyncSnapshot<List<LocationModel>> snapshot){
         if(snapshot.hasData){
-
-            return StackedAreaCustomColorLineChart(_generateSeries(snapshot.data), animate: false);
+          if(snapshot.data.length > 0){
+            return Container(
+              height: 240,
+              child: 
+             StackedAreaCustomColorLineChart(_generateSeries(snapshot.data), animate: false),
+            );
+          }else{
+            return Text("No Data Available", textAlign: TextAlign.center);
+          }
         }else{
-          return Container();
+            return Text("No Data Available", textAlign: TextAlign.center);
         }
        },
-     )
-   );
+     );
   }
 
   Widget _buildMap(){
@@ -373,6 +381,11 @@ Widget _getSpeed(){
         child: Text("View User Route"),
         textColor: Colors.white,
         onPressed: (){
+          if(selectedDate == null){
+            setState(() {
+             selectedDate = DateTime.now(); 
+            });
+          }
           Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -394,7 +407,7 @@ Widget _getSpeed(){
               areaColorFn: (_, __) =>
                 charts.MaterialPalette.blue.shadeDefault.lighter,
               domainFn: (LocationModel location, _) =>  (DateTime.parse(location.timestamp).millisecondsSinceEpoch - DateTime.parse(locations.first.timestamp).millisecondsSinceEpoch)/1000.0,
-              measureFn: (LocationModel location, _) => location.coords.speed,
+              measureFn: (LocationModel location, _) => location.coords.speed*3.6,
               data:  locations,
             )];
   }

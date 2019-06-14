@@ -5,6 +5,7 @@ import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
 import 'package:worksent_sesfikile/blocs/drivers_bloc.dart';
 import 'package:worksent_sesfikile/models/driver_model.dart';
 import 'package:worksent_sesfikile/pages/tracking_page.dart';
+import 'package:worksent_sesfikile/utils/Utills.dart';
 
 import 'add_driver_page.dart';
 import 'add_manager_page.dart';
@@ -29,16 +30,16 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     _bloc.driversStream.listen((drivers){
-      _updateMarkerDrivers(drivers.where((d)=>d.location != null).toList(growable: true));
+      _updateMarkerDrivers(drivers.where((d)=>d.location != null && d.previousLocation != null).toList(growable: true));
     });
   }
 
   _updateMarkerDrivers(List<DriverModel> drivers) async{
-    print("drivers size: ${drivers[0]}");
     setState(() {
        mapMarkers.clear();
     mapMarkers.addAll(drivers.map((d){
       final marker = Marker(
+        rotation: Utils.calculateBearing(d.previousLocation.coords, d.location.coords),
         icon: BitmapDescriptor.fromAsset("images/car.png"),
         markerId: MarkerId(d.id),
         position: LatLng(d.location.coords.latitude, d.location.coords.longitude),
@@ -57,6 +58,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement build
     return Scaffold(
         body: GoogleMap(
+          rotateGesturesEnabled: false,
           markers: mapMarkers,
             onMapCreated: _onMapCreated,
             onCameraMove: (cameraPosition) {},
@@ -101,33 +103,12 @@ void _settingModalBottomSheet(DriverModel model){
              ListTile(
                 title:Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[const Text("Speed", style: TextStyle(color: Colors.white),),
-                  Text('${model.location.coords.speed < 0 ? 0 : model.location.coords.speed*3.6}KM/h', style: TextStyle(color: Colors.white),)]),
+                  Text('${(model.location.coords.speed < 0 ? 0 : model.location.coords.speed*3.6).toStringAsFixed(2)}KM/h', style: TextStyle(color: Colors.white),)]),
                 onTap: () => {},          
             ),
              Container(
               margin: const EdgeInsets.only(left: 16, right: 16),
               child: const Divider(color: Colors.grey,),
-            ),
-            StreamBuilder(
-              initialData: 0.0,
-              stream: _driverBloc.distanceStream,
-              builder: (BuildContext context, AsyncSnapshot<double> snapshot){
-                if(snapshot.hasData){
-                  return  ListTile(
-                title:Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[const Text("Trip Distance", style: TextStyle(color: Colors.white),),
-                  Text('${snapshot.data}KM', style: TextStyle(color: Colors.white),)]),
-                onTap: () => {},          
-            );
-                }else{
-                return   ListTile(
-                title:Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[const Text("Trip Distance", style: TextStyle(color: Colors.white),),
-                  const Text('0KM', style: TextStyle(color: Colors.white),)]),
-                onTap: () => {},          
-            );
-                }
-              },
             ),
              Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

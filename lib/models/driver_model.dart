@@ -9,13 +9,17 @@ class DriverModel extends Model {
   String email;
   String driversLicenseUrl;
   String pdpLicenseUrl;
+  String pdpLicense;
   String pdpExpireDate;
   String branch;
   String driversLicenseExpireDate;
+  String driversLicense;
   String company;
   String imageUrl;
   VehicleModel vehicle;
   LocationModel location;
+  LocationModel previousLocation;
+  bool clockedIn;
 
   DriverModel(String id,
       {this.firstName,
@@ -30,7 +34,11 @@ class DriverModel extends Model {
       this.imageUrl,
       this.driversLicenseExpireDate,
       this.vehicle,
-      this.location
+      this.location,
+      this.previousLocation,
+      this.clockedIn,
+      this.driversLicense,
+      this.pdpLicense
       })
       : super(id, DateTime.now().millisecondsSinceEpoch,
             DateTime.now().millisecondsSinceEpoch);
@@ -48,7 +56,9 @@ class DriverModel extends Model {
     this.driversLicenseExpireDate = obj['driversLicenseExpireDate'];
     this.company = obj['company'];
     this.imageUrl = obj['imageUrl'];
-    
+    this.clockedIn = obj['clockedIn'];
+    this.driversLicense = obj['driversLicense'];
+    this.pdpLicense = obj['pdpLicense'];
     if(obj.containsKey('vehicle') && obj['vehicle'] != null){
       this.vehicle = VehicleModel.map(obj['vehicle']);
     }else{
@@ -57,6 +67,14 @@ class DriverModel extends Model {
 
     if(obj.containsKey('location') && obj['location'] != null){
       this.location = LocationModel(obj['location']);
+    }else{
+      this.location = null;
+    }
+
+    if(obj.containsKey('previousLocation') && obj['previousLocation'] != null){
+      this.previousLocation = LocationModel(obj['previousLocation']);
+    }else{
+      this.previousLocation = null;
     }
   }
 
@@ -75,6 +93,9 @@ class DriverModel extends Model {
     map['driversLicenseExpireDate'] = this.driversLicenseExpireDate;
     map['company'] = this.company;
     map['imageUrl'] = this.imageUrl;
+    map['clockedIn'] = this.clockedIn;
+    map['driversLicense'] = this.driversLicense;
+    map['pdpLicense'] = this.pdpLicense;
     if(this.vehicle != null){
       map['vehicle'] = this.vehicle.toMapWithoutDriver();
     }else{
@@ -84,7 +105,13 @@ class DriverModel extends Model {
     if(this.location != null){
       map['location'] = this.location.map;
     }else{
-      map['location'] = null;
+      map['vehicle'] = null;
+    }
+
+    if(this.previousLocation != null){
+      map['previousLocation'] = this.previousLocation.map;
+    }else{
+      map['vehicle'] = null;
     }
     return map;
   }
@@ -104,13 +131,16 @@ class DriverModel extends Model {
     map['company'] = this.company;
     map['imageUrl'] = this.imageUrl;
     map['location'] = this.location;
+    map['previousLocation'] = this.previousLocation;
+    map['clockedIn'] = this.clockedIn;
+    map['driversLicense'] = this.driversLicense;
+    map['pdpLicense'] = this.pdpLicense;
     return map;
   }
 
 
 
   DriverModel.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
-    print("location_2: ${map}");
     this.id = map['id'];
     this.firstName = map['firstName'];
     this.lastName = map['lastName'];
@@ -123,6 +153,10 @@ class DriverModel extends Model {
     this.driversLicenseExpireDate = map['driversLicenseExpireDate'];
     this.company = map['company'];
     this.imageUrl = map['imageUrl'];
+    this.driversLicense = map['driversLicense'];
+    this.pdpLicense = map['pdpLicense'];
+    this.clockedIn = map['clockedIn'];
+
     if(map.containsKey('vehicle') && map['vehicle'] != null){
       this.vehicle = VehicleModel.map(map['vehicle']);
     }else{
@@ -131,6 +165,14 @@ class DriverModel extends Model {
 
     if(map['location'] != null){
       this.location = LocationModel(map['location']);
+    }else{
+      this.location = null;
+    }
+
+    if(map['previousLocation'] != null){
+      this.previousLocation = LocationModel(map['previousLocation']);
+    }else{
+      this.previousLocation = null;
     }
   }
 }

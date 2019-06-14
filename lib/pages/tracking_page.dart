@@ -46,7 +46,7 @@ class _TrackingState extends State<TrackingPage> {
               pointsParam: locations
                   .map((location) =>
                       LatLng(location.coords.latitude, location.coords.longitude))
-                  .toList());
+                  .toList(), );
 
           var startMarker = Marker(
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),

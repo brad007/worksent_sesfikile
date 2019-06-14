@@ -17,6 +17,7 @@ class _SignInPage extends State<SignInPage>{
 
   final _bloc = SignInBloc();
   SharedPreferences _preferences;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -33,6 +34,16 @@ class _SignInPage extends State<SignInPage>{
           _navigateToHome();
         }
       });
+    });
+
+    _bloc.showGenericError.listen((error){
+      if(error != null){
+        _scaffoldKey.currentState.showSnackBar(
+         SnackBar(
+          content: Text(error),
+          duration: Duration(seconds: 3),
+        ));
+      }
     });
   }
 
@@ -65,10 +76,35 @@ class _SignInPage extends State<SignInPage>{
           ),
           _buildCompanyEmail(),
           _buildPassword(),
+          _loader(),
           _buildSignInButton(),
           SizedBox(height: 16)
         ],
       ),
+    );
+  }
+
+  Widget _loader(){
+    return StreamBuilder(
+      initialData: false,
+      stream: _bloc.showLoader,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot){
+        if(snapshot.hasData){
+          if(snapshot.data){
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CircularProgressIndicator()
+              ],
+            ) ;
+          }else{
+            return Container();
+          }
+        }else{
+          return Container();
+        }
+      },
     );
   }
 

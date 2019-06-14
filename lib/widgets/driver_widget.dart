@@ -10,6 +10,19 @@ class DriverWidget extends StatelessWidget {
 
   const DriverWidget({Key key,this.model, this.onTap}) : super(key: key);
 
+  Widget _getCarWidget(){
+    if(model.vehicle == null){
+      return Container( height: 80, width: 80);
+    }else{
+      if(model.vehicle.pictureUrl == null){
+        return Image.asset("images/bus.png", height: 80, width: 80,);
+      }else{
+        return Image.network(model.vehicle.pictureUrl, height: 80, width: 80,);
+      }
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -31,7 +44,7 @@ class DriverWidget extends StatelessWidget {
                       Text("${model.vehicle.vehicleType} ${model.vehicle.brand}")
                     ],
                   ),
-                  Icon(Icons.location_off)
+                  _getCarWidget()
                 ],
               ),
               Divider(),
@@ -55,7 +68,10 @@ class DriverWidget extends StatelessWidget {
                     },
                   ),
                   Column(
-                    children: <Widget>[Text("${model.driversLicenseExpireDate}")],
+                    children: 
+                      model.clockedIn ?
+                      [Icon(Icons.location_on, color: Colors.green), Text("Clocked In")] : 
+                      [Icon(Icons.location_off, color: Colors.red), Text("Clocked Out")],
                   )
                 ],
               )

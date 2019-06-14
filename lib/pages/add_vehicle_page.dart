@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_places_picker/google_places_picker.dart';
 import 'package:worksent_sesfikile/blocs/add_vehicle_bloc.dart';
 import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
 import 'package:worksent_sesfikile/widgets/form_listview.dart';
@@ -13,6 +14,7 @@ class AddVehiclePage extends StatefulWidget{
 
 class _AddVehicleState extends State<AddVehiclePage>{
   final _bloc = AddVehicleBloc();
+  String placeName;
 
   @override
   void initState() {
@@ -72,6 +74,7 @@ class _AddVehicleState extends State<AddVehiclePage>{
 
   Widget _buildYear() {
     return FormTextInput(
+      isNumber: true,
       hint: "Year",
       stream: _bloc.yearError,
       onChange: _bloc.yearChanged,
@@ -88,6 +91,7 @@ class _AddVehicleState extends State<AddVehiclePage>{
 
   Widget _buildCurrentKMs() {
     return FormTextInput(
+      isNumber: true,
       hint: "Current KMs",
       stream: _bloc.currentKMError,
       onChange: _bloc.currentKMChanged,
@@ -95,17 +99,22 @@ class _AddVehicleState extends State<AddVehiclePage>{
   }
 
   Widget _buildStorageAddress() {
-    return FormTextInput(
-      hint: "Vehicle Storage Address",
-      stream: _bloc.vehicleAddressError,
-      onChange: _bloc.vehicleAddressChanged,
+    return InkWell(
+      child: Container(padding: EdgeInsets.all(16),child:Text(placeName == null ? "Vehicle Storage Address":placeName, style: TextStyle(fontWeight: FontWeight.bold),)  ,),
+      onTap: () async{
+        var place = await PluginGooglePlacePicker.showAutocomplete(mode: PlaceAutocompleteMode.MODE_FULLSCREEN, countryCode: "ZA");
+        _bloc.vehicleAddressChanged(place.name);
+        setState(() {
+          placeName = place.name;
+        });
+      },
     );
   }
 
   Widget _buildInsurance() {
     return FormTextInput(
-      hint: "Insurance Company",
-      stream: _bloc.insuranceCompanyError,
+      hint: "Insurance Company - not required",
+      stream: null,
       onChange: _bloc.insuranceCompanyChanged,
     );
   }
