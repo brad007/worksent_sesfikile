@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
+import 'package:owner/models/driver_model.dart';
 
 class LocationRepository{
   Firestore _firestore = Firestore.instance;
@@ -28,6 +28,7 @@ class LocationRepository{
 
   Stream<QuerySnapshot> getDateList(DateTime date, DriverModel driver){
     
+    date = date.add(Duration(hours: 2));
     final startDateTime = date.subtract(Duration(
     hours: date.hour,
     minutes: date.minute,

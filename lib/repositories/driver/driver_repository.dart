@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:worksent_sesfikile/models/company_model.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/repositories/repository.dart';
+import 'package:owner/models/company_model.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/repositories/repository.dart';
 
 class DriverRepository extends Repository<DriverModel, DriverModel> {
   final rootNode = "drivers";

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_places_picker/google_places_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:worksent_sesfikile/blocs/sign_up_bloc.dart';
-import 'package:worksent_sesfikile/irrelevant.dart';
-import 'package:worksent_sesfikile/models/user_model.dart';
-import 'package:worksent_sesfikile/pages/main_page.dart';
-import 'package:worksent_sesfikile/provider/home_provider.dart';
-import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
-import 'package:worksent_sesfikile/widgets/form_listview.dart';
+import 'package:owner/blocs/sign_up_bloc.dart';
+import 'package:owner/irrelevant.dart';
+import 'package:owner/models/user_model.dart';
+import 'package:owner/pages/main_page.dart';
+import 'package:owner/provider/home_provider.dart';
+import 'package:owner/widgets/FormTextInput.dart';
+import 'package:owner/widgets/form_listview.dart';
 
 class SignUpPage extends StatefulWidget {
   @override

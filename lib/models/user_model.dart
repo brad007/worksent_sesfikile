@@ -1,5 +1,5 @@
-import 'package:worksent_sesfikile/models/company_model.dart';
-import 'package:worksent_sesfikile/models/model.dart';
+import 'package:owner/models/company_model.dart';
+import 'package:owner/models/model.dart';
 
 class UserModel extends Model {
   String email;

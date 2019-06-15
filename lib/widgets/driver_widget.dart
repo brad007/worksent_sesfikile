@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/pages/driver_page.dart';
-import 'package:worksent_sesfikile/pages/view_driver_page.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/pages/driver_page.dart';
+import 'package:owner/pages/view_driver_page.dart';
 
 class DriverWidget extends StatelessWidget {
   final DriverModel model;

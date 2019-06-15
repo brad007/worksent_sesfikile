@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/blocs/add_manager_bloc.dart';
-import 'package:worksent_sesfikile/irrelevant.dart';
-import 'package:worksent_sesfikile/widgets/FormTextInput.dart';
-import 'package:worksent_sesfikile/widgets/form_listview.dart';
+import 'package:owner/blocs/add_manager_bloc.dart';
+import 'package:owner/irrelevant.dart';
+import 'package:owner/widgets/FormTextInput.dart';
+import 'package:owner/widgets/form_listview.dart';
 
 class AddManagerPage extends StatefulWidget {
   @override

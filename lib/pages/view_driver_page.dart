@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/pages/profile_image_camera.dart';
-import 'package:worksent_sesfikile/pages/view_image_page.dart';
-import 'package:worksent_sesfikile/utils/Utills.dart';
+import 'package:owner/blocs/driver_bloc.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/pages/profile_image_camera.dart';
+import 'package:owner/pages/view_image_page.dart';
+import 'package:owner/utils/Utills.dart';
 
 class ViewDriverPage extends StatefulWidget {
   final DriverModel model;

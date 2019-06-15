@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/blocs/managers_bloc.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
+import 'package:owner/blocs/managers_bloc.dart';
+import 'package:owner/models/driver_model.dart';
 
 import 'add_manager_page.dart';
 import 'manager_page.dart';

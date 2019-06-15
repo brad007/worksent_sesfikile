@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/models/vehicle_model.dart';
-import 'package:worksent_sesfikile/pages/vehicle_page.dart';
+import 'package:owner/models/vehicle_model.dart';
+import 'package:owner/pages/vehicle_page.dart';
 
 class VehicleWidget extends StatelessWidget {
   final VehicleModel model;

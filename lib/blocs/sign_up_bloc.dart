@@ -2,10 +2,10 @@ import 'dart:core';
 
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:worksent_sesfikile/irrelevant.dart';
-import 'package:worksent_sesfikile/models/sign_up_data.dart';
-import 'package:worksent_sesfikile/models/user_model.dart';
-import 'package:worksent_sesfikile/repositories/auth/auth_repository.dart';
+import 'package:owner/irrelevant.dart';
+import 'package:owner/models/sign_up_data.dart';
+import 'package:owner/models/user_model.dart';
+import 'package:owner/repositories/auth/auth_repository.dart';
 
 class SignUpBloc {
   final AuthRepository _authRepository = AuthRepository();

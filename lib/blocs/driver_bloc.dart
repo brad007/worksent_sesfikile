@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/models/location_model.dart';
-import 'package:worksent_sesfikile/repositories/driver/driver_repository.dart';
-import 'package:worksent_sesfikile/repositories/location/location_repository.dart';
-import 'package:worksent_sesfikile/utils/Utills.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/models/location_model.dart';
+import 'package:owner/repositories/driver/driver_repository.dart';
+import 'package:owner/repositories/location/location_repository.dart';
+import 'package:owner/utils/Utills.dart';
 
 class DriverBloc{
   var _driverRepository = DriverRepository();

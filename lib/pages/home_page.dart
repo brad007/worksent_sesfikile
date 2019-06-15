@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import "package:location/location.dart" as LocationManager;
-import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
-import 'package:worksent_sesfikile/blocs/drivers_bloc.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/pages/tracking_page.dart';
-import 'package:worksent_sesfikile/utils/Utills.dart';
+import 'package:owner/blocs/driver_bloc.dart';
+import 'package:owner/blocs/drivers_bloc.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/pages/tracking_page.dart';
+import 'package:owner/utils/Utills.dart';
 
 import 'add_driver_page.dart';
 import 'add_manager_page.dart';
@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     mapMarkers.addAll(drivers.map((d){
       final marker = Marker(
         rotation: Utils.calculateBearing(d.previousLocation.coords, d.location.coords),
-        icon: BitmapDescriptor.fromAsset("images/car.png"),
+        icon: BitmapDescriptor.fromAsset("images/markerpng"),
         markerId: MarkerId(d.id),
         position: LatLng(d.location.coords.latitude, d.location.coords.longitude),
         onTap: (){

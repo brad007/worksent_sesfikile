@@ -1,9 +1,9 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:worksent_sesfikile/irrelevant.dart';
-import 'package:worksent_sesfikile/models/driver_data.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/repositories/auth/auth_repository.dart';
-import 'package:worksent_sesfikile/repositories/manager/manager_repository.dart';
+import 'package:owner/irrelevant.dart';
+import 'package:owner/models/driver_data.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/repositories/auth/auth_repository.dart';
+import 'package:owner/repositories/manager/manager_repository.dart';
 
 class AddManagerBloc {
   final _managerRepository = ManagerRepository();

@@ -1,5 +1,5 @@
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/models/model.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/models/model.dart';
 
 class VehicleModel extends Model {
   String vehicleType;

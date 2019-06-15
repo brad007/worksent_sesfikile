@@ -1,6 +1,6 @@
-import 'package:worksent_sesfikile/models/location_model.dart';
-import 'package:worksent_sesfikile/models/model.dart';
-import 'package:worksent_sesfikile/models/vehicle_model.dart';
+import 'package:owner/models/location_model.dart';
+import 'package:owner/models/model.dart';
+import 'package:owner/models/vehicle_model.dart';
 
 class DriverModel extends Model {
   String firstName;

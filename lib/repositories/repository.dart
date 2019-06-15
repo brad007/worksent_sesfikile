@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:worksent_sesfikile/models/company_model.dart';
-import 'package:worksent_sesfikile/models/model.dart';
+import 'package:owner/models/company_model.dart';
+import 'package:owner/models/model.dart';
 
 abstract class Repository<T extends Model, S extends Model> {
   Firestore _firestore = Firestore.instance;

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:worksent_sesfikile/pages/sign_up_page.dart';
-import 'package:worksent_sesfikile/pages/vehicles_page.dart';
 
 import 'drivers_page.dart';
 import 'home_page.dart';
 import 'managers_page.dart';
+import 'vehicles_page.dart';
 
 class MainPage extends StatefulWidget {
   @override

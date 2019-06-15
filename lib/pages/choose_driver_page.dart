@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
-import 'package:worksent_sesfikile/blocs/drivers_bloc.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/widgets/driver_widget.dart';
+import 'package:owner/blocs/driver_bloc.dart';
+import 'package:owner/blocs/drivers_bloc.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/widgets/driver_widget.dart';
 
 class ChooseDriverPage extends StatefulWidget {
   ChooseDriverPage({Key key}) : super(key: key);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
+import 'package:owner/models/driver_model.dart';
 
 class ManagerPage extends StatefulWidget {
   final DriverModel model;

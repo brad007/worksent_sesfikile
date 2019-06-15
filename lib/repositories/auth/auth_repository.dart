@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:worksent_sesfikile/models/user_model.dart';
-import 'package:worksent_sesfikile/repositories/auth/auth_provider.dart';
-import 'package:worksent_sesfikile/repositories/user/user_provider.dart';
+import 'package:owner/models/user_model.dart';
+import 'package:owner/repositories/auth/auth_provider.dart';
+import 'package:owner/repositories/user/user_provider.dart';
 
 class AuthRepository {
   AuthProvider _authProvider = AuthProvider();

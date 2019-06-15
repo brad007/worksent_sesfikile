@@ -1,9 +1,9 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:worksent_sesfikile/models/vehicle_data.dart';
-import 'package:worksent_sesfikile/irrelevant.dart';
-import 'package:worksent_sesfikile/models/vehicle_model.dart';
-import 'package:worksent_sesfikile/repositories/auth/auth_repository.dart';
-import 'package:worksent_sesfikile/repositories/vehicle/vehicle_repository.dart';
+import 'package:owner/models/vehicle_data.dart';
+import 'package:owner/irrelevant.dart';
+import 'package:owner/models/vehicle_model.dart';
+import 'package:owner/repositories/auth/auth_repository.dart';
+import 'package:owner/repositories/vehicle/vehicle_repository.dart';
 
 class AddVehicleBloc {
   final _vehicleRepository = VehicleRepository();

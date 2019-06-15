@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/blocs/vehicles_bloc.dart';
-import 'package:worksent_sesfikile/models/vehicle_model.dart';
-import 'package:worksent_sesfikile/widgets/vehicle_widget.dart';
+import 'package:owner/blocs/vehicles_bloc.dart';
+import 'package:owner/models/vehicle_model.dart';
+import 'package:owner/widgets/vehicle_widget.dart';
 
 class ChooseVehiclePage extends StatefulWidget {
   ChooseVehiclePage({Key key}) : super(key: key);

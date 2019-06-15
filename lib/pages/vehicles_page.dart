@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/blocs/vehicles_bloc.dart';
-import 'package:worksent_sesfikile/models/vehicle_model.dart';
-import 'package:worksent_sesfikile/pages/vehicle_page.dart';
-import 'package:worksent_sesfikile/widgets/vehicle_widget.dart';
+import 'package:owner/blocs/vehicles_bloc.dart';
+import 'package:owner/models/vehicle_model.dart';
+import 'package:owner/pages/vehicle_page.dart';
+import 'package:owner/widgets/vehicle_widget.dart';
 
 import 'add_vehicle_page.dart';
 

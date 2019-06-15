@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intro_views_flutter/Models/page_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:worksent_sesfikile/pages/main_page.dart';
-import 'package:worksent_sesfikile/pages/sign_in_page.dart';
-import 'package:worksent_sesfikile/pages/sign_up_page.dart';
-import 'package:worksent_sesfikile/provider/home_provider.dart';
+import 'package:owner/pages/main_page.dart';
+import 'package:owner/pages/sign_in_page.dart';
+import 'package:owner/pages/sign_up_page.dart';
+import 'package:owner/provider/home_provider.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
 import 'package:google_places_picker/google_places_picker.dart';
 

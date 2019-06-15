@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:worksent_sesfikile/models/user_model.dart';
+import 'package:owner/models/user_model.dart';
 
 class UserProvider {
   Firestore _firestore = Firestore.instance;

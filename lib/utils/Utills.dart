@@ -6,10 +6,10 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:worksent_sesfikile/models/location_model.dart';
+import 'package:owner/models/location_model.dart';
 import 'dart:math' as math;
 
-import 'package:worksent_sesfikile/pages/profile_image_camera.dart';
+import 'package:owner/pages/profile_image_camera.dart';
 
 class Utils{
   static bool emailIsValid(String email) {

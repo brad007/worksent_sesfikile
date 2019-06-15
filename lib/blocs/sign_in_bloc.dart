@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:worksent_sesfikile/irrelevant.dart';
-import 'package:worksent_sesfikile/models/login_data.dart';
-import 'package:worksent_sesfikile/repositories/auth/auth_repository.dart';
-import 'package:worksent_sesfikile/utils/Utills.dart';
+import 'package:owner/irrelevant.dart';
+import 'package:owner/models/login_data.dart';
+import 'package:owner/repositories/auth/auth_repository.dart';
+import 'package:owner/utils/Utills.dart';
 
 class SignInBloc {
   final AuthRepository _authRepository = AuthRepository();

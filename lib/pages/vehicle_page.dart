@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:worksent_sesfikile/blocs/driver_bloc.dart';
-import 'package:worksent_sesfikile/blocs/vehicle_bloc.dart';
-import 'package:worksent_sesfikile/models/driver_model.dart';
-import 'package:worksent_sesfikile/models/vehicle_model.dart';
-import 'package:worksent_sesfikile/pages/choose_driver_page.dart';
-import 'package:worksent_sesfikile/pages/profile_image_camera.dart';
+import 'package:owner/blocs/driver_bloc.dart';
+import 'package:owner/blocs/vehicle_bloc.dart';
+import 'package:owner/models/driver_model.dart';
+import 'package:owner/models/vehicle_model.dart';
+import 'package:owner/pages/choose_driver_page.dart';
+import 'package:owner/pages/profile_image_camera.dart';
 import "package:flutter_image_compress/flutter_image_compress.dart";
 import "package:firebase_storage/firebase_storage.dart";
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 
-import 'package:worksent_sesfikile/utils/Utills.dart';
+import 'package:owner/utils/Utills.dart';
 
 class VehiclePage extends StatefulWidget {
   final VehicleModel model;
